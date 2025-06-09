@@ -1,0 +1,62 @@
+.main-container{
+/*   border: 5px solid red;   */
+
+  display:flex;
+  flex-direction: row;
+  margin-left:24%;
+  width:50%;
+
+  position: relative; /* below part is so that books appear on top of container */
+  z-index: 1;
+  height:195%;
+  bottom:1170px;
+
+   
+}
+
+.none{
+  display:none;
+  /* the topmostplank is hidden, to easily make left and right plank accomadte entire height..not ideal but works perfectly */
+}
+.plank-left, .plank-right{
+  
+  width:20px;
+  background-color:#c9a150;  ;
+
+}
+.plank-left-dark, .plank-right-dark{
+  
+  width:20px;
+  background-color:#652f03;  
+   clip-path: polygon(4% 0, 96% 0, 100% 100%, 0% 100%);
+
+}
+
+.plank-container{
+    display:flex;
+    flex-direction: column;
+/* 
+    border: 2px solid black; */ 
+    gap:170px;
+
+    width:100%;
+   
+  
+}
+.plank-dark{
+    width:100%;
+    height:20px;
+    background-color: #652f03 ; 
+    clip-path: polygon(4% 0, 96% 0, 100% 100%, 0% 100%);
+
+/* border: 3px solid black;  */
+}
+.plank-bottom{
+    width:100%;
+    height:20px;
+    background-color: #c9a150;
+    /* border: 3px solid black;  */    
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6); 
+
+}
+
