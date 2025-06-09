@@ -20,7 +20,7 @@ const Book = () => {
 
   const [selectedPdfUrl, setSelectedPdfUrl] = useState(null);
 
-  const [books,setBooks]=useState([])
+  const [books,setBooks]=useState([])//CONTAINS ALL MY BOOK DATA-INCLDUING URL, ID
 /*   const {s3Url}=useContext(S3UrlContext) */
   const [openPdf,setOpenPdf]=useState(false)
    const [numPages, setNumPages] = useState(null);
@@ -55,9 +55,16 @@ const Book = () => {
   getBooks();
  },[])
 
-const handleOpenBook = (bookUrl) => {
+const handleOpenBook = (bookUrl,bookId) => {
   setSelectedPdfUrl(bookUrl);
-  navigate('/view-pdf', { state: { bookUrl } });
+  console.log("book id paassed:--",bookId)
+ navigate("/pdf-viewer", {
+  state: {
+    bookUrl: bookUrl,
+    bookId: bookId
+  }
+});
+
 };
 
   
@@ -68,7 +75,7 @@ const handleOpenBook = (bookUrl) => {
       {
         books.map((book,index)=>(
         <>
-        <div    key={index}  className='book'  style={{ backgroundImage: `url(${book?.imageUrl || defaultCover})` }}  onClick={() => handleOpenBook(book?.fileName)}>  {book?.title || ''}</div>
+        <div    key={index}  className='book'  style={{ backgroundImage: `url(${book?.imageUrl || defaultCover})` }}  onClick={() => handleOpenBook(book?.fileName,book?._id)}>  {book?.title || ''}</div>
         </>
         ))
       } 

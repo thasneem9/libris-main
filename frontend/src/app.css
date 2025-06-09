@@ -10,3 +10,10 @@ caret-color: transparent;
 body{
       background-image: url('./images/light_wood.jpeg');
 }
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+ 
+}

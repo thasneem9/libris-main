@@ -1,39 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import PDFViewerPage from './pages/PDFViewerPage';
+import Home from './components/Home';
 
-import Navbar from "./components/Navbar"
-import Plank from "./components/Plank"
-import Book from "./components/Book"
-import Robot from "./components/Robot"
-
-import { SharedS3UrlProvider } from "./contexts/s3urlContext"
 import "./app.css"
 
-import { BrowserRouter } from 'react-router-dom';
+// wrote to avoid the super-persistent error: container must be absolute forp df-highlighter
+const AppWrapper = ({ children }) => (
+  <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+    {children}
+  </div>
+);
+
 function App() {
-
-
   return (
     <>
       <Router>
-     <Navbar/>
-   
-    <SharedS3UrlProvider>
-    <Book />
-    <Plank />
-    <Robot/>
-    </SharedS3UrlProvider>
-
-    
-      <Routes>
-        <Route path="/" element={<PDFViewerPage />} />
-        <Route path="/view-pdf" element={<PDFViewerPage />} />
-      </Routes>
-    </Router>
-  
+        <AppWrapper>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/pdf-viewer" element={<PDFViewerPage />} />
+          </Routes>
+        </AppWrapper>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
