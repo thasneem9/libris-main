@@ -8,12 +8,6 @@ import defaultCover from '../images/defaultCover.png'
 import { S3UrlContext } from '../contexts/s3urlContext'
 
 import { useContext, useEffect,useState } from 'react'
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
-
-// Set worker source to public path
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
 
 const Book = () => {
   const navigate = useNavigate();
@@ -84,23 +78,7 @@ const handleOpenBook = (bookUrl,bookId) => {
     <div className='book'       style={{ backgroundImage: `url(${book3})` }}></div>
     <div className='book'       style={{ backgroundImage: `url(${book1})` }}></div>
    </div>
-{/*   {selectedPdfUrl && (
-  <div className="pdf-viewer">
-    <Document
-      file={selectedPdfUrl}
-      onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-      loading="Loading PDF..."
-    >
-      {Array.from(new Array(numPages), (el, index) => (
-        <Page
-          key={`page_${index + 1}`}
-          pageNumber={index + 1}
-          width={600}
-        />
-      ))}
-    </Document>
-  </div>
-)} */}
+
     
     
     </>

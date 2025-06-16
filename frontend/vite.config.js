@@ -13,8 +13,5 @@ export default defineConfig({
 				secure: false,
 			},
 		},
-	},
-	 optimizeDeps: {
-    include: ['pdfjs-dist/build/pdf.worker.entry']
-  }
+	}
 });

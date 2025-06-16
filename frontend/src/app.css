@@ -1,12 +1,8 @@
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-/*  overflow-y: hidden;  */
-overflow-x: auto;
-caret-color: transparent;
+* {
+  outline: 1px solid rgba(255,0,0,0.2);
 }
+
+
 body{
       background-image: url('./images/light_wood.jpeg');
 }
