@@ -10,7 +10,7 @@ import myFile from '../static/sample.pdf'
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 function PDFViewverPage() {
-/*   const myFile =replace myFile import with this if u have a url of pdf instead */
+/*   const myFile replaced w/ url */
  const location = useLocation();
   const { bookUrl } = location.state || {};
   console.log("book00",bookUrl)
@@ -27,6 +27,14 @@ const [showCommentBox, setShowCommentBox] = useState(false);
 const [activeComment, setActiveComment] = useState(null);
 
 
+
+  /*-- ────────────────   NEW: zoom state  ──────────────── */
+  const [scale, setScale]       = useState(1);        // default 100 %
+  const ZOOM_STEP               = 0.15;
+
+  const zoomIn  = () => setScale((s) => s + ZOOM_STEP);
+ const zoomOut = () => setScale((s) => Math.max(0.3, s - ZOOM_STEP));
+/* -- */
   const selectionRangeRef = useRef(null);           // always holds a DOM Range
   const commentPosRef     = useRef({ x: 0, y: 0 }); // where to pop the comment UI
 
@@ -195,11 +203,17 @@ setShowCommentBox(false);
   /* ─────────────────────────── UI ─────────────────────────── */
   return (
     <div
-      className="App"
+      className="viewer-wrapper"
       onMouseUp={handleMouseUp}
       onDoubleClick={handleDoubleClick}
     >
       <h2>PDF Annotator</h2>
+           {/* ─────────────  DUMMY TOOLBAR  ───────────── */}
+    <div className="toolbar">
+      <button className="zoom-btn" onClick={zoomOut} title="Zoom out">➖</button>
+      <span className="zoom-label">{Math.round(scale * 100)}%</span>
+      <button className="zoom-btn" onClick={zoomIn}  title="Zoom in">➕</button>
+    </div>
 
       {selectedText && (
         <p className="info-box">
@@ -281,6 +295,7 @@ setShowCommentBox(false);
             renderMode="canvas"
             onLoadSuccess={onPageLoadSuccess}
             onRenderError={onPageLoadError}
+            scale={scale} 
           />
         ))}
       </Document>

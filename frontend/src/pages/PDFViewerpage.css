@@ -55,3 +55,57 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* ------------  layout  ------------ */
+.viewer-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;        /* centres vertically on large screens   */
+  padding: 1rem;
+  gap: 1rem;
+}
+
+/* ------------  toolbar  ------------ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+}
+.zoom-btn {
+  font-size: 1.1rem;
+  padding: 2px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+.zoom-btn:hover {
+  background: #ececec;
+}
+.zoom-label {
+  font-size: 0.9rem;
+  min-width: 3ch;
+  text-align: center;
+}
+
+/* ------------  responsive   ------------ */
+@media (max-width: 768px) {
+  .viewer-wrapper {
+    padding: 0.5rem;
+  }
+  .toolbar {
+    position: sticky;       /* stays visible while scrolling pages   */
+    top: 0;
+    z-index: 100;
+  }
+  .zoom-btn {
+    font-size: 1rem;
+  }
+}
