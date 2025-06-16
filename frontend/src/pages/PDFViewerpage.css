@@ -17,17 +17,24 @@
   gap: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
-
+/* ─────────────── STYLISH COLOR SWATCHES ─────────────── */
+/* ─────────────── MODERN CIRCLE COLOR SWATCHES ─────────────── */
 .swatch {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
+  width: 65px;
+  height: 24px;
+  border-radius: 50%;                    /* make it circular */
   cursor: pointer;
-  outline: 1px solid #6663;
+  border: 2px solid transparent;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
+
 .swatch:hover {
-  outline-color: #000a;
+  transform: scale(1.15);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  border-color: #3333;
 }
+
 
 .comment-box {
   position: absolute;

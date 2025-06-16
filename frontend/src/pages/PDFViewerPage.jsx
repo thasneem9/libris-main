@@ -1,61 +1,64 @@
-// App.jsx
 import './PDFViewerpage.css';
 import { useState, useRef, useEffect } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { useLocation } from 'react-router-dom';
-import myFile from '../static/sample.pdf'
+import { LiaComment } from "react-icons/lia";
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
-function PDFViewverPage() {
-/*   const myFile replaced w/ url */
- const location = useLocation();
+function PDFViewerPage() {
+  const location = useLocation();
   const { bookUrl } = location.state || {};
-  console.log("book00",bookUrl)
 
-  /* ───────────────────────── STATE ───────────────────────── */
-  const [numPages, setNumPages]   = useState(null);
+  const [numPages, setNumPages] = useState(null);
   const [selectedText, setSelectedText] = useState('');
-  const [popupPos, setPopupPos]   = useState({ visible: false, x: 0, y: 0 });
+  const [popupPos, setPopupPos] = useState({ visible: false, x: 0, y: 0 });
   const [annotations, setAnnotations] = useState([]);
   const [commentMode, setCommentMode] = useState(false);
- const [commentText, setCommentText] = useState('');
-const [showCommentBox, setShowCommentBox] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [activeComment, setActiveComment] = useState(null);
 
-const [activeComment, setActiveComment] = useState(null);
+  const [scale, setScale] = useState(1);
+  const ZOOM_STEP = 0.15;
+  const zoomIn = () => setScale((s) => s + ZOOM_STEP);
+  const zoomOut = () => setScale((s) => Math.max(0.3, s - ZOOM_STEP));
 
+  const selectionRangeRef = useRef(null);
+  const commentPosRef = useRef({ x: 0, y: 0 });
 
+  const modernColors = [
+    { name: 'Sky Blue', hex: '#60A5FA' },
+    { name: 'Amber Gold', hex: '#FBBF24' },
+    { name: 'Rose', hex: '#F87171' },
+    { name: 'Emerald', hex: '#34D399' },
+    { name: 'Purple', hex: '#A78BFA' },
+  ];
 
-  /*-- ────────────────   NEW: zoom state  ──────────────── */
-  const [scale, setScale]       = useState(1);        // default 100 %
-  const ZOOM_STEP               = 0.15;
-
-  const zoomIn  = () => setScale((s) => s + ZOOM_STEP);
- const zoomOut = () => setScale((s) => Math.max(0.3, s - ZOOM_STEP));
-/* -- */
-  const selectionRangeRef = useRef(null);           // always holds a DOM Range
-  const commentPosRef     = useRef({ x: 0, y: 0 }); // where to pop the comment UI
-
-  /* ──────────────────── DOCUMENT LIFECYCLE ────────────────── */
-  const onDocumentLoad = ({ numPages }) => {
-    console.log('✅ PDF loaded – pages:', numPages);
-    setNumPages(numPages);
+  const rgba = (c) => {
+    switch (c) {
+      case 'sky blue': return 'rgba(96, 165, 250, 0.35)';
+      case 'amber gold': return 'rgba(251, 191, 36, 0.35)';
+      case 'rose': return 'rgba(248, 113, 113, 0.35)';
+      case 'emerald': return 'rgba(52, 211, 153, 0.35)';
+      case 'purple': return 'rgba(167, 139, 250, 0.35)';
+      default: return 'rgba(0,0,0,0.1)';
+    }
   };
-  const onPageLoadSuccess = (p) => console.log(`✅ Page ${p.pageNumber} rendered`);
-  const onPageLoadError   = (e) => console.error('❌ Page render error:', e);
 
-  /* ───────────────────── TEXT  SELECTION ──────────────────── */
+  const onDocumentLoad = ({ numPages }) => setNumPages(numPages);
+  const onPageLoadSuccess = (p) => console.log(`Page ${p.pageNumber} loaded`);
+  const onPageLoadError = (e) => console.error('Render error:', e);
+
   const handleMouseUp = () => {
     const sel = window.getSelection();
     const text = sel?.toString().trim();
-
-    if (!text) return; // nothing selected
-    console.log('📌 MouseUp selection →', text);
+    if (!text) return;
 
     const range = sel.getRangeAt(0);
-    selectionRangeRef.current = range; // **store the real Range**
+    selectionRangeRef.current = range;
     const rect = range.getBoundingClientRect();
 
     setSelectedText(text);
@@ -66,57 +69,13 @@ const [activeComment, setActiveComment] = useState(null);
     });
   };
 
-  /* ───────────────────── HIGHLIGHT FLOW ───────────────────── */
-  const applyHighlight = (color, keepRange = false) => {
-    try {
-      const rangeRef = selectionRangeRef.current;
-      if (!rangeRef || typeof rangeRef.surroundContents !== 'function') {
-        console.error('❌ applyHighlight >> invalid Range:', rangeRef);
-        return;
-      }
-
-      const range = rangeRef.cloneRange();       // work on a copy
-      console.log('🖍️  Cloned range text:', range.toString());
-
-      const span = document.createElement('span');
-      span.style.backgroundColor = rgba(color);
-      span.style.padding = '1px 2px';
-      span.style.borderRadius = '2px';
-
-      range.surroundContents(span);              // mutate DOM
-      const { left, top } = span.getBoundingClientRect();
-      const highlight = {
-        text: range.toString(),
-        color,
-        comment: null,
-        x: left + window.scrollX,
-        y: top + window.scrollY,
-      };
-
-      setAnnotations((prev) => [...prev, highlight]);
-      console.log('🌈 Highlight saved:', highlight);
-
-        // cleanup UI
-      setPopupPos({ visible: false, x: 0, y: 0 });
-      if (!keepRange) {
-  window.getSelection().removeAllRanges();
-  selectionRangeRef.current = null;
-}
-
-      setSelectedText('');
-    } catch (err) {
-      console.error('🚨 applyHighlight error:', err);
-    }
-  };
-
-  /* ─────────────────── DOUBLE‑CLICK  → COMMENT MODE ───────── */
   const handleDoubleClick = () => {
     const sel = window.getSelection();
     const text = sel?.toString().trim();
     if (!text) return;
 
     const range = sel.getRangeAt(0);
-    selectionRangeRef.current = range;           // keep the Range
+    selectionRangeRef.current = range;
     const rect = range.getBoundingClientRect();
     commentPosRef.current = {
       x: rect.right + window.scrollX,
@@ -127,80 +86,95 @@ const [activeComment, setActiveComment] = useState(null);
     setCommentMode(true);
     setCommentText('');
     setPopupPos({ visible: false });
-    console.log('💬 Comment mode ON for:', text);
     window.getSelection().removeAllRanges();
   };
 
-  /* ───────────────────── COMMENT SUBMIT ───────────────────── */
+  const applyHighlight = (color, keepRange = false) => {
+    try {
+      const rangeRef = selectionRangeRef.current;
+      if (!rangeRef) return;
+
+      const range = rangeRef.cloneRange();
+      const span = document.createElement('span');
+      span.style.backgroundColor = rgba(color);
+      span.style.padding = '1px 2px';
+      span.style.borderRadius = '2px';
+
+      range.surroundContents(span);
+      const { left, top } = span.getBoundingClientRect();
+      const highlight = {
+        text: range.toString(),
+        color,
+        comment: null,
+        x: left + window.scrollX,
+        y: top + window.scrollY,
+      };
+
+      setAnnotations((prev) => [...prev, highlight]);
+      setPopupPos({ visible: false, x: 0, y: 0 });
+
+      if (!keepRange) {
+        window.getSelection().removeAllRanges();
+        selectionRangeRef.current = null;
+      }
+      setSelectedText('');
+    } catch (err) {
+      console.error('Highlight error:', err);
+    }
+  };
+
   const submitComment = () => {
     const range = selectionRangeRef.current;
-    if (!range) {
-      console.warn('🧐 No range for comment');
-      return;
-    }
+    if (!range) return;
 
-    // attach icon just after the highlighted span or text
     const icon = document.createElement('span');
-  icon.textContent = '💬';
-icon.style.marginLeft = '4px';
-icon.style.fontSize = '14px';
-icon.style.color = '#555';
-icon.style.verticalAlign = 'middle';
-
-// Store the comment in a data attribute
-icon.setAttribute('data-comment', commentText);
-
-// On click, show the comment in an alert box or toggle UI
-icon.onclick = () => {
-  const msg = icon.getAttribute('data-comment');
-  setActiveComment(msg); // optional for displaying in a UI
-  alert(`💬 Comment:\n\n${msg}`); // basic approach
-};
-
-    icon.style.cursor = 'pointer';
-    icon.style.userSelect = 'none';
-    icon.style.fontSize   = '12px';
     icon.style.marginLeft = '4px';
+    icon.style.verticalAlign = 'middle';
+    icon.style.fontSize = '16px';
+    icon.style.color = '#FBBF24'; // Amber Yellow
+    icon.style.cursor = 'pointer';
+    icon.setAttribute('data-comment', commentText);
+
+    icon.onclick = () => {
+      const msg = icon.getAttribute('data-comment');
+      setActiveComment(msg);
+      alert(`💬 Comment:\n\n${msg}`);
+    };
+
+    const commentIcon = document.createElement('div');
+    commentIcon.style.display = 'inline-block';
+    commentIcon.appendChild(
+      Object.assign(document.createElement('span'), {
+        innerHTML: `<svg width="18" height="18" fill="#FBBF24" viewBox="0 0 24 24"><path d="M21 6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12l4-4h12a2 2 0 0 0 2-2V6z"/></svg>`
+      })
+    );
+    icon.appendChild(commentIcon);
+
     range.endContainer.parentElement.appendChild(icon);
 
     const { left, top } = range.getBoundingClientRect();
     const note = {
       text: selectedText,
-      color: 'yellow',
+      color: 'amber gold',
       comment: commentText,
       x: left + window.scrollX,
       y: top + window.scrollY,
     };
 
     setAnnotations((prev) => [...prev, note]);
-    console.log('📝 Comment saved:', note);
-
-    // reset UI
-   setCommentMode(false);
-setShowCommentBox(false);
+    setCommentMode(false);
+    setShowCommentBox(false);
     setCommentText('');
     selectionRangeRef.current = null;
     setSelectedText('');
   };
 
-  /* ─────────────── LOG ANNOTATION STATE ON CHANGE ─────────── */
   useEffect(() => {
     if (annotations.length) {
-      console.log('📦 annotations now =', annotations);
+      console.log('Annotations:', annotations);
     }
   }, [annotations]);
 
-  /* ───────────────────────── HELPERS ──────────────────────── */
-  const rgba = (c) => {
-    switch (c) {
-      case 'yellow': return 'rgba(255,255,0,0.4)';
-      case 'red':    return 'rgba(255,0,0,0.3)';
-      case 'blue':   return 'rgba(0,0,255,0.3)';
-      default:       return 'rgba(0,0,0,0.1)';
-    }
-  };
-
-  /* ─────────────────────────── UI ─────────────────────────── */
   return (
     <div
       className="viewer-wrapper"
@@ -208,12 +182,12 @@ setShowCommentBox(false);
       onDoubleClick={handleDoubleClick}
     >
       <h2>PDF Annotator</h2>
-           {/* ─────────────  DUMMY TOOLBAR  ───────────── */}
-    <div className="toolbar">
-      <button className="zoom-btn" onClick={zoomOut} title="Zoom out">➖</button>
-      <span className="zoom-label">{Math.round(scale * 100)}%</span>
-      <button className="zoom-btn" onClick={zoomIn}  title="Zoom in">➕</button>
-    </div>
+
+      <div className="toolbar">
+        <button className="zoom-btn" onClick={zoomOut} title="Zoom out">➖</button>
+        <span className="zoom-label">{Math.round(scale * 100)}%</span>
+        <button className="zoom-btn" onClick={zoomIn} title="Zoom in">➕</button>
+      </div>
 
       {selectedText && (
         <p className="info-box">
@@ -221,41 +195,40 @@ setShowCommentBox(false);
         </p>
       )}
 
-      {/* highlight colour popup (single‑click) */}
+      {/* highlight popup */}
       {popupPos.visible && (
         <div
           className="color-popup"
           style={{ top: popupPos.y, left: popupPos.x }}
         >
-          {['blue', 'yellow', 'red'].map((c) => (
+          {modernColors.map(({ name, hex }) => (
             <span
-              key={c}
+              key={hex}
               className="swatch"
-              style={{ backgroundColor: c }}
-          onClick={() => applyHighlight(c, true)}   
-              title={`Highlight ${c}`}
+              style={{ backgroundColor: hex }}
+              onClick={() => applyHighlight(name.toLowerCase(), true)}
+              title={`Highlight ${name}`}
             />
           ))}
         </div>
       )}
 
-      {/* comment UI (double‑click) */}
+      {/* comment mode popup */}
       {commentMode && (
         <div
           className="comment-box"
           style={{ top: commentPosRef.current.y, left: commentPosRef.current.x }}
         >
           <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
-          {['blue', 'yellow', 'red'].map((c) => (
-  <span
-    key={c}
-    className="swatch"
-    style={{ backgroundColor: c }}
-    onClick={() => applyHighlight(c, true)} // ⬅ KEEP RANGE ALIVE
-    title={`Highlight ${c}`}
-  />
-))}
-
+            {modernColors.map(({ name, hex }) => (
+              <span
+                key={hex}
+                className="swatch"
+                style={{ backgroundColor: hex }}
+                onClick={() => applyHighlight(name.toLowerCase(), true)}
+                title={`Highlight ${name}`}
+              />
+            ))}
             <button
               style={{
                 padding: '2px 8px',
@@ -264,28 +237,26 @@ setShowCommentBox(false);
                 borderRadius: 4,
                 cursor: 'pointer',
               }}
-            onClick={() => setShowCommentBox(true)}
-
+              onClick={() => setShowCommentBox(true)}
             >
-              💬 Comment
+              Add
+              <LiaComment size={18} style={{ verticalAlign: 'middle' }} />
             </button>
           </div>
 
-         {showCommentBox && (
-  <>
-    <textarea
-      placeholder="Add a comment..."
-      value={commentText}
-      onChange={(e) => setCommentText(e.target.value)}
-    />
-    <button onClick={submitComment}>💾 Save Comment</button>
-  </>
-)}
-
+          {showCommentBox && (
+            <>
+              <textarea
+                placeholder="Add a comment..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              />
+              <button onClick={submitComment}>💾 Save Comment</button>
+            </>
+          )}
         </div>
       )}
 
-      {/* PDF itself */}
       <Document file={bookUrl} onLoadSuccess={onDocumentLoad}>
         {Array.from({ length: numPages ?? 0 }, (_, i) => (
           <Page
@@ -295,7 +266,7 @@ setShowCommentBox(false);
             renderMode="canvas"
             onLoadSuccess={onPageLoadSuccess}
             onRenderError={onPageLoadError}
-            scale={scale} 
+            scale={scale}
           />
         ))}
       </Document>
@@ -303,4 +274,4 @@ setShowCommentBox(false);
   );
 }
 
-export default PDFViewverPage;
+export default PDFViewerPage;
