@@ -1,277 +1,153 @@
-import './PDFViewerpage.css';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useState,useEffect } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
+import { useLocation } from 'react-router-dom';
+import useZoom from '../hooks/useZoom.js';
+import useAnnotations from '../hooks/useAnnotations.js';
+import ColorSwatchBar from '../components/ColorSwatchBar';
+import AnnotationLayer from '../components/AnnotationLayer';
+
+
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import { useLocation } from 'react-router-dom';
-import { LiaComment } from "react-icons/lia";
+import './PDFViewerPage.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+pdfjs.GlobalWorkerOptions.workerSrc ='/pdf.worker.min.js'
 
-function PDFViewerPage() {
-  const location = useLocation();
-  const { bookUrl } = location.state || {};
-
+export default function PDFViewerPage() {
+  const { state } = useLocation();                  // { bookUrl, bookId }
+  const { bookUrl, bookId } = state || {};
   const [numPages, setNumPages] = useState(null);
-  const [selectedText, setSelectedText] = useState('');
-  const [popupPos, setPopupPos] = useState({ visible: false, x: 0, y: 0 });
-  const [annotations, setAnnotations] = useState([]);
-  const [commentMode, setCommentMode] = useState(false);
-  const [commentText, setCommentText] = useState('');
-  const [showCommentBox, setShowCommentBox] = useState(false);
-  const [activeComment, setActiveComment] = useState(null);
 
-  const [scale, setScale] = useState(1);
-  const ZOOM_STEP = 0.15;
-  const zoomIn = () => setScale((s) => s + ZOOM_STEP);
-  const zoomOut = () => setScale((s) => Math.max(0.3, s - ZOOM_STEP));
+  /* zoom */
+  const { scale, zoomIn, zoomOut } = useZoom();
 
-  const selectionRangeRef = useRef(null);
-  const commentPosRef = useRef({ x: 0, y: 0 });
+  /* annotations hook */
+  const { list: annList, add: addAnn, update: updAnn } = useAnnotations(bookId);
 
-  const modernColors = [
-    { name: 'Sky Blue', hex: '#60A5FA' },
-    { name: 'Amber Gold', hex: '#FBBF24' },
-    { name: 'Rose', hex: '#F87171' },
-    { name: 'Emerald', hex: '#34D399' },
-    { name: 'Purple', hex: '#A78BFA' },
-  ];
-
-  const rgba = (c) => {
-    switch (c) {
-      case 'sky blue': return 'rgba(96, 165, 250, 0.35)';
-      case 'amber gold': return 'rgba(251, 191, 36, 0.35)';
-      case 'rose': return 'rgba(248, 113, 113, 0.35)';
-      case 'emerald': return 'rgba(52, 211, 153, 0.35)';
-      case 'purple': return 'rgba(167, 139, 250, 0.35)';
-      default: return 'rgba(0,0,0,0.1)';
+  /* keeps each page's bounding box */
+  const [pageRects, setPageRects] = useState({});   // {1:{w,h}, 2:{w,h}}
+const savePageRect = (page, el) => {
+  if (!el) return;           // unmount
+  const { offsetWidth: w, offsetHeight: h } = el;
+  setPageRects(prev => {
+    const old = prev[page] || {};
+    if (old.width !== w || old.height !== h) {
+      return { ...prev, [page]: { width: w, height: h } };
     }
+    return prev;
+  });
+};
+
+
+  /* popup state */
+  const [picker, setPicker] = useState(null);       // {x,y,info}
+
+ const onMouseUp = () => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+
+  const text = sel.toString().trim();
+  if (!text) return;
+
+  const range = sel.getRangeAt(0);
+  const rect  = range.getBoundingClientRect();
+
+  // ensure we have an Element that supports .closest()
+  const node = range.startContainer.nodeType === Node.TEXT_NODE
+    ? range.startContainer.parentElement
+    : range.startContainer;
+
+  const pageDiv  = node?.closest('.pdf-page');
+  if (!pageDiv) return;                        // extra safety
+
+  const page     = Number(pageDiv.dataset.page);
+  const pageRect = pageDiv.getBoundingClientRect();
+
+  setPicker({
+    x: rect.left - pageRect.left,
+    y: rect.top  - pageRect.top  - 32,
+    info: {
+      page,
+      text,
+      xPct: (rect.left - pageRect.left) / pageRect.width,
+      yPct: (rect.top  - pageRect.top ) / pageRect.height,
+      wPct: rect.width  / pageRect.width,
+      hPct: rect.height / pageRect.height,
+    },
+  });
+
+  sel.removeAllRanges();
+};
+
+
+  /* create annotation with chosen colour */
+  const confirmColour = (colorName) => {
+    addAnn({ ...picker.info, color: colorName, bookId });
+    setPicker(null);
   };
 
-  const onDocumentLoad = ({ numPages }) => setNumPages(numPages);
-  const onPageLoadSuccess = (p) => console.log(`Page ${p.pageNumber} loaded`);
-  const onPageLoadError = (e) => console.error('Render error:', e);
-
-  const handleMouseUp = () => {
-    const sel = window.getSelection();
-    const text = sel?.toString().trim();
-    if (!text) return;
-
-    const range = sel.getRangeAt(0);
-    selectionRangeRef.current = range;
-    const rect = range.getBoundingClientRect();
-
-    setSelectedText(text);
-    setPopupPos({
-      visible: true,
-      x: rect.right + window.scrollX,
-      y: rect.top + window.scrollY - 6,
-    });
+  /* comment editing */
+  const onComment = (ann) => {
+    const txt = prompt('Enter comment', ann.comment || '');
+    if (txt !== null) updAnn(ann._id, { comment: txt });
   };
-
-  const handleDoubleClick = () => {
-    const sel = window.getSelection();
-    const text = sel?.toString().trim();
-    if (!text) return;
-
-    const range = sel.getRangeAt(0);
-    selectionRangeRef.current = range;
-    const rect = range.getBoundingClientRect();
-    commentPosRef.current = {
-      x: rect.right + window.scrollX,
-      y: rect.top + window.scrollY - 10,
-    };
-
-    setSelectedText(text);
-    setCommentMode(true);
-    setCommentText('');
-    setPopupPos({ visible: false });
-    window.getSelection().removeAllRanges();
-  };
-
-  const applyHighlight = (color, keepRange = false) => {
-    try {
-      const rangeRef = selectionRangeRef.current;
-      if (!rangeRef) return;
-
-      const range = rangeRef.cloneRange();
-      const span = document.createElement('span');
-      span.style.backgroundColor = rgba(color);
-      span.style.padding = '1px 2px';
-      span.style.borderRadius = '2px';
-
-      range.surroundContents(span);
-      const { left, top } = span.getBoundingClientRect();
-      const highlight = {
-        text: range.toString(),
-        color,
-        comment: null,
-        x: left + window.scrollX,
-        y: top + window.scrollY,
-      };
-
-      setAnnotations((prev) => [...prev, highlight]);
-      setPopupPos({ visible: false, x: 0, y: 0 });
-
-      if (!keepRange) {
-        window.getSelection().removeAllRanges();
-        selectionRangeRef.current = null;
-      }
-      setSelectedText('');
-    } catch (err) {
-      console.error('Highlight error:', err);
-    }
-  };
-
-  const submitComment = () => {
-    const range = selectionRangeRef.current;
-    if (!range) return;
-
-    const icon = document.createElement('span');
-    icon.style.marginLeft = '4px';
-    icon.style.verticalAlign = 'middle';
-    icon.style.fontSize = '16px';
-    icon.style.color = '#FBBF24'; // Amber Yellow
-    icon.style.cursor = 'pointer';
-    icon.setAttribute('data-comment', commentText);
-
-    icon.onclick = () => {
-      const msg = icon.getAttribute('data-comment');
-      setActiveComment(msg);
-      alert(`💬 Comment:\n\n${msg}`);
-    };
-
-    const commentIcon = document.createElement('div');
-    commentIcon.style.display = 'inline-block';
-    commentIcon.appendChild(
-      Object.assign(document.createElement('span'), {
-        innerHTML: `<svg width="18" height="18" fill="#FBBF24" viewBox="0 0 24 24"><path d="M21 6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12l4-4h12a2 2 0 0 0 2-2V6z"/></svg>`
-      })
-    );
-    icon.appendChild(commentIcon);
-
-    range.endContainer.parentElement.appendChild(icon);
-
-    const { left, top } = range.getBoundingClientRect();
-    const note = {
-      text: selectedText,
-      color: 'amber gold',
-      comment: commentText,
-      x: left + window.scrollX,
-      y: top + window.scrollY,
-    };
-
-    setAnnotations((prev) => [...prev, note]);
-    setCommentMode(false);
-    setShowCommentBox(false);
-    setCommentText('');
-    selectionRangeRef.current = null;
-    setSelectedText('');
-  };
-
-  useEffect(() => {
-    if (annotations.length) {
-      console.log('Annotations:', annotations);
-    }
-  }, [annotations]);
 
   return (
+    <section style={{ padding: 8 }}>
+      <header style={{ marginBottom: 8 }}>
+        <button onClick={zoomOut}>−</button>
+        <span style={{ margin: '0 8px' }}>{Math.round(scale * 100)}%</span>
+        <button onClick={zoomIn}>+</button>
+      </header>
+
+      <div onMouseUp={onMouseUp}>
+        <Document file={bookUrl}   onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
+      
+
+{Array.from({ length: numPages || 0 }).map((_, i) => {
+  const pageNum = i + 1;
+  return (
     <div
-      className="viewer-wrapper"
-      onMouseUp={handleMouseUp}
-      onDoubleClick={handleDoubleClick}
+      key={pageNum}
+      data-page={pageNum}
+      className="pdf-page"
+      style={{ position: 'relative', marginBottom: 16 }}
+      ref={el => savePageRect(pageNum, el)}
     >
-      <h2>PDF Annotator</h2>
+      <Page
+        pageNumber={pageNum}
+        scale={scale}
+        onRenderSuccess={() => {
+          // canvas now has final size – update rects
+          savePageRect(pageNum, document.querySelector(`div[data-page="${pageNum}"]`));
+        }}
+      />
 
-      <div className="toolbar">
-        <button className="zoom-btn" onClick={zoomOut} title="Zoom out">➖</button>
-        <span className="zoom-label">{Math.round(scale * 100)}%</span>
-        <button className="zoom-btn" onClick={zoomIn} title="Zoom in">➕</button>
-      </div>
-
-      {selectedText && (
-        <p className="info-box">
-          📝 <strong>Selected:</strong> {selectedText}
-        </p>
-      )}
-
-      {/* highlight popup */}
-      {popupPos.visible && (
-        <div
-          className="color-popup"
-          style={{ top: popupPos.y, left: popupPos.x }}
-        >
-          {modernColors.map(({ name, hex }) => (
-            <span
-              key={hex}
-              className="swatch"
-              style={{ backgroundColor: hex }}
-              onClick={() => applyHighlight(name.toLowerCase(), true)}
-              title={`Highlight ${name}`}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* comment mode popup */}
-      {commentMode && (
-        <div
-          className="comment-box"
-          style={{ top: commentPosRef.current.y, left: commentPosRef.current.x }}
-        >
-          <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
-            {modernColors.map(({ name, hex }) => (
-              <span
-                key={hex}
-                className="swatch"
-                style={{ backgroundColor: hex }}
-                onClick={() => applyHighlight(name.toLowerCase(), true)}
-                title={`Highlight ${name}`}
-              />
-            ))}
-            <button
-              style={{
-                padding: '2px 8px',
-                fontSize: 13,
-                border: '1px solid #ccc',
-                borderRadius: 4,
-                cursor: 'pointer',
-              }}
-              onClick={() => setShowCommentBox(true)}
-            >
-              Add
-              <LiaComment size={18} style={{ verticalAlign: 'middle' }} />
-            </button>
-          </div>
-
-          {showCommentBox && (
-            <>
-              <textarea
-                placeholder="Add a comment..."
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-              <button onClick={submitComment}>💾 Save Comment</button>
-            </>
-          )}
-        </div>
-      )}
-
-      <Document file={bookUrl} onLoadSuccess={onDocumentLoad}>
-        {Array.from({ length: numPages ?? 0 }, (_, i) => (
-          <Page
-            key={i}
-            pageNumber={i + 1}
-            renderAnnotationLayer={false}
-            renderMode="canvas"
-            onLoadSuccess={onPageLoadSuccess}
-            onRenderError={onPageLoadError}
-            scale={scale}
-          />
-        ))}
-      </Document>
+      <AnnotationLayer
+        pageBox={pageRects[pageNum]}
+        annotations={annList.filter(a => a.page === pageNum)}
+        onComment={onComment}
+      />
     </div>
   );
-}
+})}
 
-export default PDFViewerPage;
+
+        </Document>
+
+        {picker && (
+          <div
+            style={{
+              position: 'absolute',
+              left: picker.x,
+              top : picker.y,
+              zIndex: 999,
+            }}
+          >
+            <ColorSwatchBar onSelect={confirmColour} />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
