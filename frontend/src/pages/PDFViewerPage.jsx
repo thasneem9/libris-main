@@ -26,6 +26,22 @@ export default function PDFViewerPage() {
 
   /* keeps each page's bounding box */
   const [pageRects, setPageRects] = useState({});   // {1:{w,h}, 2:{w,h}}
+  const confirmColour = (colorName, comment = '') => {
+  addAnn({ ...picker.info, color: colorName, bookId, ...(comment && { comment }) });
+  setPicker(null);
+};
+const addWithComment = () => {
+  const comment = prompt('Enter your comment');
+  if (comment) {
+    const color = 'yellow'; // or let user choose later
+    addAnn({ ...picker.info, color, comment, bookId });
+    setPicker(null);
+  }
+};
+
+
+
+
 const savePageRect = (page, el) => {
   if (!el) return;           // unmount
   const { offsetWidth: w, offsetHeight: h } = el;
@@ -80,11 +96,7 @@ const savePageRect = (page, el) => {
 };
 
 
-  /* create annotation with chosen colour */
-  const confirmColour = (colorName) => {
-    addAnn({ ...picker.info, color: colorName, bookId });
-    setPicker(null);
-  };
+
 
   /* comment editing */
   const onComment = (ann) => {
@@ -135,18 +147,23 @@ const savePageRect = (page, el) => {
 
         </Document>
 
-        {picker && (
-          <div
-            style={{
-              position: 'absolute',
-              left: picker.x,
-              top : picker.y,
-              zIndex: 999,
-            }}
-          >
-            <ColorSwatchBar onSelect={confirmColour} />
-          </div>
-        )}
+ {picker && (
+  <div
+    style={{
+      position: 'absolute',
+      left: picker.x,
+      top : picker.y,
+      zIndex: 999,
+    }}
+  >
+    <ColorSwatchBar
+      onSelect={confirmColour}
+      onComment={addWithComment}
+    />
+  </div>
+)}
+
+
       </div>
     </section>
   );

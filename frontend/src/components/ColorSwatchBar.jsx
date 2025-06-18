@@ -1,22 +1,35 @@
-import { colorPalette } from '../utils/colors';
+// ColorSwatchBar.jsx
+import { LiaComment } from 'react-icons/lia';
 
-export default function ColorSwatchBar({ onSelect }) {
+
+const colors = ['yellow', 'green', 'blue', 'pink']; // example
+
+export default function ColorSwatchBar({ onSelect, onComment }) {
   return (
-    <div style={{
-      display: 'flex', gap: 6, padding: 6,
-      background: '#fff', border: '1px solid #ddd', borderRadius: 4
-    }}>
-      {colorPalette.map(({ name, hex }) => (
-        <span
-          key={name}
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'white', padding: 8, borderRadius: 4, boxShadow: '0 0 4px rgba(0,0,0,0.2)' }}>
+      {colors.map(color => (
+        <div
+          key={color}
+          onClick={() => onSelect(color)}
           style={{
-            width: 18, height: 18, borderRadius: '50%',
-            background: hex, cursor: 'pointer', border: '1px solid #ccc'
+            background: color,
+            width: 20,
+            height: 20,
+            borderRadius: '50%',
+            cursor: 'pointer',
+            border: '1px solid #999'
           }}
-          title={name}
-          onClick={() => onSelect(name)}
         />
       ))}
+      
+      {/* Comment button */}
+      <div
+        onClick={onComment}
+        style={{ cursor: 'pointer' }}
+        title="Add a comment"
+      >
+        <LiaComment size={20} color="#555" />
+      </div>
     </div>
   );
 }
