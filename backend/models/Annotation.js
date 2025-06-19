@@ -6,7 +6,7 @@ const annotationSchema = new mongoose.Schema(
     page: { type: Number, required: true },
     text: String,
     comment: String,
-    color: { type: String, default: '#FFFF00' }, // highlight color
+    color: { type: String, default: 'Amber Gold' }, // highlight color
     xPct: Number,
     yPct: Number,
     wPct: Number,
