@@ -44,7 +44,7 @@ export default function PDFViewerPage() {
   );
 }
 
-const [viewMode, setViewMode] = useState('single'); // 'single' | 'book'
+const [viewMode, setViewMode] = useState('book'); // 'single' | 'book'
 const [showViewPopup, setShowViewPopup] = useState(false);
 
   const { state } = useLocation();                  // { bookUrl, bookId }
