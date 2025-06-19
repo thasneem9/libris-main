@@ -1,15 +1,14 @@
 import { LiaEye } from 'react-icons/lia';
 import { LuGalleryHorizontal } from 'react-icons/lu';
 
-export default function PDFHeader({
-  scale,
-  zoomIn,
-  zoomOut,
-  eraserMode,
-  setEraserMode,     // ✅ this must match parent
-  onViewClick,       // ✅ match prop passed
-  onNavClick         // ✅ match prop passed
-}) {
+export default function PDFHeader(props) {
+  const {
+    scale, zoomIn, zoomOut,
+    eraserMode, setEraserMode,
+    onViewClick, onNavClick,
+    children          // ⬅️ receive extra nodes safely
+  } = props;
+ 
   return (
     <header className="pdf-header">
       <div className="pdf-toolbar">
@@ -32,6 +31,7 @@ export default function PDFHeader({
         <button className="pdf-btn icon" onClick={onNavClick} title="Navigation Mode">
           <LuGalleryHorizontal size={18} />
         </button>
+         {children /* ⬅️ pen icon lives here */}
       </div>
     </header>
   );

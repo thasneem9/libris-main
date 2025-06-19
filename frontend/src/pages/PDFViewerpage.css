@@ -265,3 +265,48 @@ input[type="range"].pdf-progress::-moz-range-thumb {
 }
 
 /* AROW */
+
+/* penmode */
+.pen-mode {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' viewBox='0 0 16 16'><path d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708L3.207 16H0v-3.207L12.146.146zM11.207 2L2 11.207V14h2.793L14 3.793 11.207 2z'/></svg>") 4 12, auto;
+}
+
+/* and for react-pdf pages */
+.pen-mode .react-pdf__Page,
+.pen-mode .react-pdf__Page * {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' viewBox='0 0 16 16'><path d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708L3.207 16H0v-3.207L12.146.146z'/></svg>") 4 12, auto !important;
+}
+
+.pdf-doc-wrapper.pen-mode {
+  touch-action: none;
+}
+
+
+
+.eraser-mode,
+.pen-mode {
+  user-select: none;
+}
+
+/* Only allow selection if highlightMode is on */
+.pdf-viewer-container:not(.highlight-mode) {
+  user-select: none;
+}
+.pdf-viewer-container {
+  user-select: none; /* no selection by default */
+}
+
+.pdf-viewer-container.highlight-mode {
+  user-select: text; /* only allow text selection when highlightMode = true */
+}
+.pdf-viewer-container { user-select: none; }
+.pdf-viewer-container.highlight-mode { user-select: text; }
+/* always on top of pages & annotations */
+.drawing-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* penmode end */
