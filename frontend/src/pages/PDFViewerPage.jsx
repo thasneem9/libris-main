@@ -30,6 +30,14 @@ export default function PDFViewerPage() {
   const [currentPageIdx, setCurrentPageIdx] = useState(0); // starts at 0 for flip mode
 const pageRefs = useRef({});     // 🔑 keeps a ref per page
 
+
+useEffect(() => {
+  document.body.classList.add('pdf-viewer-bg');
+  return () => {
+    document.body.classList.remove('pdf-viewer-bg');
+  };
+}, []);
+
  // --- flip helpers -------------
 const pagesPerTurn = viewMode === 'single' ? 1 : 2;
 const totalTurns   = Math.ceil((numPages || 0) / pagesPerTurn);
@@ -198,47 +206,34 @@ const renderPage = (pageNum) => (
 
   return (
     <section style={{ padding: 8 }}>
-      <header style={{ marginBottom: 8 }}>
-        <button onClick={zoomOut}>−</button>
-        <span style={{ margin: '0 8px' }}>{Math.round(scale * 100)}%</span>
-        <button onClick={zoomIn}>+</button>
-        <button
-          onClick={() => setEraserMode((m) => !m)}
-          style={{ marginLeft: 12, background: eraserMode ? '#F87171' : '#eee' }}
-        >
-          🧹 Eraser
-        </button>
-
-        <button
-          onClick={() => setShowViewPopup((v) => !v)}
-          style={{ marginLeft: 12 }}
-          title="View mode"
-        >
-          <LiaEye size={18} />
-        </button>
+     <header className="pdf-header">
+  <div className="pdf-toolbar">
+    <button className="pdf-btn" onClick={zoomOut}>−</button>
+    <span className="pdf-zoom">{Math.round(scale * 100)}%</span>
+    <button className="pdf-btn" onClick={zoomIn}>+</button>
 
     <button
-  onClick={() => setShowNavPopup(v => !v)}
-  title="Navigation mode"
-  style={{ marginLeft: 8 }}
->
-<LuGalleryHorizontal size={18}/>
-</button>
+      className={`pdf-btn ${eraserMode ? 'active' : ''}`}
+      onClick={() => setEraserMode((m) => !m)}
+      title="Toggle eraser"
+    >
+      🧹 Eraser
+    </button>
 
-      </header>
+    <button className="pdf-btn icon" onClick={() => setShowViewPopup(v => !v)} title="View Mode">
+      <LiaEye size={18} />
+    </button>
+
+    <button className="pdf-btn icon" onClick={() => setShowNavPopup(v => !v)} title="Navigation Mode">
+      <LuGalleryHorizontal size={18} />
+    </button>
+  </div>
+</header>
+
 
       {showViewPopup && (
         <div
-          style={{
-            position: 'absolute',
-            top: 40,
-            left: 220,
-            background: '#fff',
-            border: '1px solid #ccc',
-            borderRadius: 4,
-            padding: 8,
-            zIndex: 9999,
-          }}
+          className='pdf-popup'
         >
           <p
             style={{ margin: 4, cursor: 'pointer', fontWeight: viewMode === 'single' ? 600 : 400 }}
