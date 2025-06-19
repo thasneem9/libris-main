@@ -12,6 +12,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import './PDFViewerPage.css';
 
 import { LiaEye, LiaSyncAltSolid } from 'react-icons/lia'; // new icon
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
@@ -334,9 +335,11 @@ const renderPage = (pageNum) => (
     }}
   >
     {/* ⬅️ Previous */}
-    {hasPrevTurn && (
-      <button onClick={() => setCurrentPageIdx(i => i - 1)}>⬅️</button>
-    )}
+  {hasPrevTurn && (
+  <button className="pdf-arrow" onClick={() => setCurrentPageIdx(i => i - 1)}>
+    <LuChevronLeft size={18} />
+  </button>
+)}
 
     {/* Page X‑Y of Z */}
     <span>
@@ -364,9 +367,12 @@ const renderPage = (pageNum) => (
     <span>{percent}%</span>
 
     {/* ➡️ Next */}
-    {hasNextTurn && (
-      <button onClick={() => setCurrentPageIdx(i => i + 1)}>➡️</button>
-    )}
+   {hasNextTurn && (
+  <button className="pdf-arrow" onClick={() => setCurrentPageIdx(i => i + 1)}>
+    <LuChevronRight size={18} />
+  </button>
+)}
+
   </div>
 )}
 
