@@ -7,6 +7,9 @@ import ColorSwatchBar from '../components/ColorSwatchBar';
 import AnnotationLayer from '../components/AnnotationLayer';
 import { LuGalleryHorizontal } from "react-icons/lu";
 
+import { AnimatePresence, motion } from 'framer-motion';
+
+
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import './PDFViewerPage.css';
@@ -168,38 +171,38 @@ const renderPage = (pageNum) => (
 
 
 
-  const renderPages = () => {
-    if (navMode === 'scroll') {
-      // full scrollable view
-      if (viewMode === 'single') {
-        return Array.from({ length: numPages || 0 }).map((_, i) => renderPage(i + 1));
-      }
-      if (viewMode === 'book') {
-        return Array.from({ length: Math.ceil((numPages || 0) / 2) }).map((_, idx) => {
-          const left = idx * 2 + 1;
-          const right = left + 1;
-          return (
-            <div key={`pair-${idx}`} className="page-pair">
-              {renderPage(left)}
-              {right <= numPages && renderPage(right)}
-            </div>
-          );
-        });
-      }
-    } else {
-      // flip mode (paginate)
-      const start = currentPageIdx * (viewMode === 'single' ? 1 : 2);
-      const left = start + 1;
-      const right = left + 1;
-
-      return (
-        <div className="page-pair">
-          {renderPage(left)}
-          {viewMode === 'book' && right <= numPages && renderPage(right)}
-        </div>
-      );
+ const renderPages = () => {
+  if (navMode === 'scroll') {
+    if (viewMode === 'single') {
+      return Array.from({ length: numPages || 0 }).map((_, i) => renderPage(i + 1));
     }
-  };
+    if (viewMode === 'book') {
+      return Array.from({ length: Math.ceil((numPages || 0) / 2) }).map((_, idx) => {
+        const left = idx * 2 + 1;
+        const right = left + 1;
+        return (
+          <div key={`pair-${idx}`} className="page-pair">
+            {renderPage(left)}
+            {right <= numPages && renderPage(right)}
+          </div>
+        );
+      });
+    }
+  } else {
+    // Flip mode (animate only page-pair inside motion.div now)
+    const start = currentPageIdx * (viewMode === 'single' ? 1 : 2);
+    const left = start + 1;
+    const right = left + 1;
+
+    return (
+      <>
+        {renderPage(left)}
+        {viewMode === 'book' && right <= numPages && renderPage(right)}
+      </>
+    );
+  }
+};
+
 
   const totalFlips = viewMode === 'single'
     ? Math.ceil((numPages || 0) / 1)
@@ -207,6 +210,7 @@ const renderPage = (pageNum) => (
 
   return (
     <section style={{ padding: 8 }}>
+        
      <header className="pdf-header">
   <div className="pdf-toolbar">
     <button className="pdf-btn" onClick={zoomOut}>−</button>
@@ -298,9 +302,59 @@ const renderPage = (pageNum) => (
 
 
       <div className={eraserMode ? 'eraser-mode' : ''} onMouseUp={onMouseUp}>
-        <Document file={bookUrl} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
-          <div className="pdf-doc-wrapper">{renderPages()}</div>
-        </Document>
+<Document file={bookUrl} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
+  <div className="pdf-doc-wrapper">
+    {navMode === 'flip' ? (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPageIdx}
+          className="page-pair"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -50 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
+          {renderPages()}
+        </motion.div>
+      </AnimatePresence>
+    ) : (
+      renderPages()
+    )}
+  </div>
+</Document>
+{navMode === 'flip' && numPages && (
+  <div className="pdf-progress-bar">
+    <button
+      className="pdf-arrow"
+      onClick={() => setCurrentPageIdx((p) => Math.max(p - 1, 0))}
+      disabled={!hasPrevTurn}
+    >
+      <LuChevronLeft size={20} />
+    </button>
+
+    <div className="progress-info">
+      <div className="progress-label">
+        {currentStartPage}–{currentEndPage} / {numPages} ({percent}%)
+      </div>
+      <div className="progress-track">
+        <div className="progress-fill" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
+
+    <button
+      className="pdf-arrow"
+      onClick={() => setCurrentPageIdx((p) => Math.min(p + 1, totalTurns - 1))}
+      disabled={!hasNextTurn}
+    >
+      <LuChevronRight size={20} />
+    </button>
+  </div>
+)}
+
+
+
+
+
 
         {picker && (
           <div
@@ -315,66 +369,8 @@ const renderPage = (pageNum) => (
           </div>
         )}
 
-        {/* Flip arrows */}
-{navMode === 'flip' && numPages && (
-  <div
-    style={{
-      position: 'fixed',
-      bottom: 12,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      background: '#fff',
-      border: '1px solid #ccc',
-      borderRadius: 8,
-      padding: '4px 12px',
-      boxShadow: '0 2px 6px rgba(0,0,0,.15)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8,
-      zIndex: 1000,
-    }}
-  >
-    {/* ⬅️ Previous */}
-  {hasPrevTurn && (
-  <button className="pdf-arrow" onClick={() => setCurrentPageIdx(i => i - 1)}>
-    <LuChevronLeft size={18} />
-  </button>
-)}
-
-    {/* Page X‑Y of Z */}
-    <span>
-      {currentStartPage}
-      {pagesPerTurn === 2 && currentEndPage !== currentStartPage ? `‑${currentEndPage}` : ''} / {numPages}
-    </span>
-
-    {/* 📊 Progress Bar */}
-   <input
-  type="range"
-  className="pdf-progress"
-  min={0}
-  max={totalTurns - 1}
-  value={currentPageIdx}
-  onChange={(e) => {
-    const value = Number(e.target.value);
-    console.log('📖 jump to turn', value);
-    setCurrentPageIdx(value);
-  }}
-  style={{ '--progress': `${(currentPageIdx / (totalTurns - 1)) * 100}%` }}
-/>
 
 
-    {/* 📈 Percent */}
-    <span>{percent}%</span>
-
-    {/* ➡️ Next */}
-   {hasNextTurn && (
-  <button className="pdf-arrow" onClick={() => setCurrentPageIdx(i => i + 1)}>
-    <LuChevronRight size={18} />
-  </button>
-)}
-
-  </div>
-)}
 
 
 
