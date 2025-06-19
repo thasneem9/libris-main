@@ -21,7 +21,8 @@ export const update = async (req, res) => {
   res.json(updated);
 };
 
-// DELETE: remove annotation
+
+
 export const del = async (req, res) => {
   await Annotation.findByIdAndDelete(req.params.id);
   res.status(204).end();

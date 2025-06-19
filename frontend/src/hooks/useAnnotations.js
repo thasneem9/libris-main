@@ -48,5 +48,19 @@ export default function useAnnotations(bookId) {
     }
   }, []);
 
-  return { list, add, update, loading };
+ 
+    const remove = useCallback(async (id) => {
+
+    setList(prev => prev.filter(a => a._id !== id));
+
+    try {
+      await axios.delete(`/api/annotations/${id}`);
+    } catch (err) {
+      console.error('Delete failed:', err);
+      // for later refetch or rollback 
+    }
+  }, []);
+  
+ return { list, add, update, remove, loading };
+
 }

@@ -17,12 +17,17 @@ export default function PDFViewerPage() {
   const { state } = useLocation();                  // { bookUrl, bookId }
   const { bookUrl, bookId } = state || {};
   const [numPages, setNumPages] = useState(null);
+  const [eraserMode, setEraserMode] = useState(false);
+
 
   /* zoom */
   const { scale, zoomIn, zoomOut } = useZoom();
 
-  /* annotations hook */
-  const { list: annList, add: addAnn, update: updAnn } = useAnnotations(bookId);
+
+ const { list: annList, add: addAnn, update: updAnn, remove: delAnn } = useAnnotations(bookId);
+
+
+
 
   /* keeps each page's bounding box */
   const [pageRects, setPageRects] = useState({});   // {1:{w,h}, 2:{w,h}}
@@ -106,13 +111,28 @@ const savePageRect = (page, el) => {
 
   return (
     <section style={{ padding: 8 }}>
-      <header style={{ marginBottom: 8 }}>
-        <button onClick={zoomOut}>−</button>
-        <span style={{ margin: '0 8px' }}>{Math.round(scale * 100)}%</span>
-        <button onClick={zoomIn}>+</button>
-      </header>
+ <header style={{ marginBottom: 8 }}>
+  <button onClick={zoomOut}>−</button>
+  <span style={{ margin: '0 8px' }}>{Math.round(scale * 100)}%</span>
+  <button onClick={zoomIn}>+</button>
+ <button
+   onClick={() => setEraserMode((m) => !m)}
+   style={{ marginLeft: 12, background: eraserMode ? '#F87171' : '#eee' }}
+ >
+   🧹 Eraser
+ </button>
+</header>
 
-      <div onMouseUp={onMouseUp}>
+
+
+
+
+ <div
+   className={eraserMode ? 'eraser-mode' : ''}
+   onMouseUp={onMouseUp}
+ >
+
+
         <Document file={bookUrl}   onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
       
 
@@ -135,11 +155,17 @@ const savePageRect = (page, el) => {
         }}
       />
 
-      <AnnotationLayer
-        pageBox={pageRects[pageNum]}
-        annotations={annList.filter(a => a.page === pageNum)}
-        onComment={onComment}
-      />
+     
+<AnnotationLayer
+  pageBox={pageRects[pageNum]}
+  annotations={annList.filter(a => a.page === pageNum)}
+  onComment={onComment}
+  onDelete={delAnn}
+ eraserMode={eraserMode}
+/>
+
+
+
     </div>
   );
 })}
