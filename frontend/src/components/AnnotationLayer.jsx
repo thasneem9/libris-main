@@ -54,7 +54,7 @@ return annotations.map((a) => {
           style={{
             position: 'absolute',
             left: pos.width + 4,
-            top : 0,
+            top : -15,
             cursor: 'pointer',
           }}
           onClick={() => onComment(a)}
