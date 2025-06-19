@@ -24,3 +24,73 @@
   gap: 32px;               /* space between left / right page */
   margin-bottom: 16px;
 }
+/* FORRR FLIPING--- */
+
+.page-pair {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.flip-left,
+.flip-right {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  font-size: 24px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  text-align: center;
+  line-height: 36px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.flip-left {
+  left: 8px;
+}
+
+.flip-right {
+  right: 8px;
+}
+
+
+/* BAR--- */
+/* Modern Progress Bar Styling */
+input[type="range"].pdf-progress {
+  -webkit-appearance: none;
+  width: 160px;
+  height: 6px;
+  background: linear-gradient(to right, #fbbf24 0%, #fbbf24 var(--progress), #ddd var(--progress), #ddd 100%);
+  border-radius: 4px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+input[type="range"].pdf-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  background: #fbbf24;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  margin-top: -4px; /* centers thumb */
+}
+
+input[type="range"].pdf-progress::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  background: #fbbf24;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+/* BAR--- */
