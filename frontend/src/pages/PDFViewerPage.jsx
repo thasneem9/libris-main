@@ -11,9 +11,42 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import './PDFViewerPage.css';
 
+import { LiaEye } from 'react-icons/lia';   // view icon
+
 pdfjs.GlobalWorkerOptions.workerSrc ='/pdf.worker.min.js'
 
 export default function PDFViewerPage() {
+
+  function renderPage(pageNum) {
+  return (
+    <div
+      key={pageNum}
+      data-page={pageNum}
+      className="pdf-page"
+      style={{ position: 'relative', marginBottom: 16 }}
+      ref={el => savePageRect(pageNum, el)}
+    >
+      <Page
+        pageNumber={pageNum}
+        scale={scale}
+        onRenderSuccess={() => {
+          savePageRect(pageNum, document.querySelector(`div[data-page="${pageNum}"]`));
+        }}
+      />
+      <AnnotationLayer
+        pageBox={pageRects[pageNum]}
+        annotations={annList.filter(a => a.page === pageNum)}
+        onComment={onComment}
+        onDelete={delAnn}
+        eraserMode={eraserMode}
+      />
+    </div>
+  );
+}
+
+const [viewMode, setViewMode] = useState('single'); // 'single' | 'book'
+const [showViewPopup, setShowViewPopup] = useState(false);
+
   const { state } = useLocation();                  // { bookUrl, bookId }
   const { bookUrl, bookId } = state || {};
   const [numPages, setNumPages] = useState(null);
@@ -121,7 +154,56 @@ const savePageRect = (page, el) => {
  >
    🧹 Eraser
  </button>
+
+
+ {/* View icon */}
+<button
+  onClick={() => setShowViewPopup((v) => !v)}
+  style={{ marginLeft: 12 }}
+  title="View options"
+>
+  <LiaEye size={18} />
+</button>
 </header>
+
+
+{/* little popup */}
+ {showViewPopup && (
+   <div
+     style={{
+       position: 'absolute',
+       top: 40,
+       left: 220,
+       background: '#fff',
+       border: '1px solid #ccc',
+       borderRadius: 4,
+       padding: 8,
+       zIndex: 9999,
+     }}
+   >
+     <p
+       style={{ margin: 4, cursor: 'pointer', fontWeight: viewMode === 'single' ? 600 : 400 }}
+       onClick={() => {
+         console.log('👉 viewMode → single');
+         setViewMode('single');
+         setShowViewPopup(false);
+       }}
+     >
+       📄 Single page
+     </p>
+     <p
+       style={{ margin: 4, cursor: 'pointer', fontWeight: viewMode === 'book' ? 600 : 400 }}
+       onClick={() => {
+         console.log('👉 viewMode → book');
+         setViewMode('book');
+         setShowViewPopup(false);
+       }}
+     >
+       📖 Two‑page (book)
+     </p>
+   </div>
+ )}
+
 
 
 
@@ -131,44 +213,29 @@ const savePageRect = (page, el) => {
    className={eraserMode ? 'eraser-mode' : ''}
    onMouseUp={onMouseUp}
  >
-
-
         <Document file={bookUrl}   onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
       
 
-{Array.from({ length: numPages || 0 }).map((_, i) => {
-  const pageNum = i + 1;
-  return (
-    <div
-      key={pageNum}
-      data-page={pageNum}
-      className="pdf-page"
-      style={{ position: 'relative', marginBottom: 16 }}
-      ref={el => savePageRect(pageNum, el)}
-    >
-      <Page
-        pageNumber={pageNum}
-        scale={scale}
-        onRenderSuccess={() => {
-          // canvas now has final size – update rects
-          savePageRect(pageNum, document.querySelector(`div[data-page="${pageNum}"]`));
-        }}
-      />
-
-     
-<AnnotationLayer
-  pageBox={pageRects[pageNum]}
-  annotations={annList.filter(a => a.page === pageNum)}
-  onComment={onComment}
-  onDelete={delAnn}
- eraserMode={eraserMode}
-/>
 
 
 
-    </div>
-  );
-})}
+
+  <div className="pdf-doc-wrapper">
+       {viewMode === 'single' &&
+         Array.from({ length: numPages || 0 }).map((_, i) => renderPage(i + 1))}
+
+       {viewMode === 'book' &&
+         Array.from({ length: Math.ceil((numPages || 0) / 2) }).map((_, idx) => {
+           const left = idx * 2 + 1;
+           const right = left + 1;
+           return (
+             <div key={`pair-${idx}`} className="page-pair">
+               {renderPage(left)}
+               {right <= numPages && renderPage(right)}
+             </div>
+           );
+         })}
+     </div>
 
 
         </Document>

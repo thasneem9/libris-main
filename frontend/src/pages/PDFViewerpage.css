@@ -9,3 +9,18 @@
 .eraser-mode {
   user-select: none;
 }
+/* --------------css for double/single view */
+
+/* center‑column layout removes extra right whitespace */
+.pdf-doc-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* ⬅ centers each page */
+}
+
+/* row for two‑page “book” view */
+.page-pair {
+  display: flex;
+  gap: 32px;               /* space between left / right page */
+  margin-bottom: 16px;
+}
