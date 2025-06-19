@@ -1,7 +1,8 @@
 import { LiaComment } from 'react-icons/lia';
 import { getRgba } from '../utils/colors';
-import './annotationLayer.css';
 
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 export default function AnnotationLayer({ pageBox, annotations, onComment, onDelete, eraserMode }) {
   if (!pageBox) return null;
   const { width, height } = pageBox;
