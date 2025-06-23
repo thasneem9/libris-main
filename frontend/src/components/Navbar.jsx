@@ -24,11 +24,11 @@ const Navbar = () => {
     <GiHamburgerMenu size={30} className="menu-icon" />
   </div>
 </div>
- <div className="lights-container">
+{/*  <div className="lights-container">
       <img src={lights} className="lights"></img>
       <img src={lights} className="lights"></img>
     
-    </div>  
+    </div>   */}
  {/*  <ul className="lightrope">
   <li></li>
   <li></li>
