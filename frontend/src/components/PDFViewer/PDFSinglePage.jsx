@@ -173,8 +173,7 @@ const handleEraserClick = (e) => {
         )}
 
          {/* ➜ ADD drawing layer */}
-  // PDFSinglePage.jsx
-// ➜ UPDATE – canvas props
+
 <canvas
   ref={canvasRef}
   className="drawing-layer"
