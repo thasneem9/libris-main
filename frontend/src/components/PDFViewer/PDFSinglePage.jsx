@@ -80,6 +80,68 @@ export default function PDFSinglePage({
    strokesRef.current[pageNumber].push(currentStroke.current);
    currentStroke.current = null;
  };
+
+ // PDFSinglePage.jsx
+// ➜ ADD – helpers and eraser logic (place near other refs/handlers)
+const HIT_TOLERANCE = 6 * window.devicePixelRatio;        // px
+
+const distToSeg = (px, py, x1, y1, x2, y2) => {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len2 = dx * dx + dy * dy;
+  if (!len2) return Math.hypot(px - x1, py - y1);
+  let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+  t = Math.min(1, Math.max(0, t));
+  const lx = x1 + t * dx, ly = y1 + t * dy;
+  return Math.hypot(px - lx, py - ly);
+};
+
+const strokeAtPoint = (cx, cy) => {
+  const strokes = strokesRef?.current[pageNumber] || [];
+  for (let s = 0; s < strokes.length; s++) {
+    const pts = strokes[s].points;
+    for (let i = 1; i < pts.length; i++) {
+      const [x1, y1] = toCanvas(pts[i - 1]);
+      const [x2, y2] = toCanvas(pts[i]);
+      if (distToSeg(cx, cy, x1, y1, x2, y2) <= HIT_TOLERANCE) return s;
+    }
+  }
+  return -1;
+};
+
+const handleEraserClick = (e) => {
+  if (!eraserMode || !pageBox) return;
+
+  const rect = e.currentTarget.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+
+  // 1️⃣ Try erasing stroke first
+  const idx = strokeAtPoint(cx, cy);
+  if (idx > -1) {
+    strokesRef.current[pageNumber].splice(idx, 1);
+    redraw();
+    return;
+  }
+
+  // 2️⃣ Then try highlight deletion
+  for (const a of annotations) {
+    const left   = a.xPct * pageBox.width;
+    const top    = a.yPct * pageBox.height;
+    const width  = a.wPct * pageBox.width;
+    const height = a.hPct * pageBox.height;
+
+    if (
+      cx >= left && cx <= left + width &&
+      cy >= top  && cy <= top + height
+    ) {
+      onDelete(a._id); // backend delete
+      return;
+    }
+  }
+};
+
+
+
     return (
       <div
         data-page={pageNumber}
@@ -88,6 +150,8 @@ export default function PDFSinglePage({
         ref={(el) => {
           if (el) pageRef.current[pageNumber] = el; // ✅ safely store ref in object
         }}
+     onClick={eraserMode ? handleEraserClick : undefined} // ✅ on outer wrapper
+
       >
         <Page
           pageNumber={pageNumber}
@@ -109,15 +173,24 @@ export default function PDFSinglePage({
         )}
 
          {/* ➜ ADD drawing layer */}
-    <canvas
-      ref={canvasRef}
-      className="drawing-layer"
-      style={{ position:'absolute', inset:0, pointerEvents: penMode ? 'auto' : 'none' }}
-      onPointerDown={down}
-      onPointerMove={move}
-      onPointerUp={up}
-      onPointerLeave={up}
-    />
+  // PDFSinglePage.jsx
+// ➜ UPDATE – canvas props
+<canvas
+  ref={canvasRef}
+  className="drawing-layer"
+  style={{
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: (penMode || eraserMode) ? 'auto' : 'none',
+    cursor: eraserMode ? 'not-allowed' : 'crosshair',
+  }}
+  onPointerDown={penMode ? down : undefined}
+  onPointerMove={penMode ? move : undefined}
+  onPointerUp  ={penMode ? up   : undefined}
+  onPointerLeave={penMode ? up  : undefined}
+ 
+/>
+
       </div>
     );
   }
