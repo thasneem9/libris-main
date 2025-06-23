@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import useZoom            from '../hooks/useZoom';
 import useAnnotations     from '../hooks/useAnnotations';
+import useDrawings from '../hooks/useDrawings';
 import useSelectionPicker from '../hooks/useSelectionPicker';
 
 import PDFHeader       from '../components/PDFViewer/PDFHeader';
@@ -43,6 +44,7 @@ export default function PDFViewerPage() {
   const pageRefs = useRef({});
 
   const { list: annList, add: addAnn, update: updAnn, remove: delAnn } = useAnnotations(bookId);
+const { data: drawingList, add: addStroke, remove: delStroke } = useDrawings(bookId);
 
   const [picker, setPicker] = useState(null);
   const onTextMouseUp       = useSelectionPicker(setPicker);
@@ -79,6 +81,16 @@ const [penColor, setPenColor] = useState('#ff0000');
   const containerProps = (!highlightMode || penMode || eraserMode)
     ? {}
     : { onMouseUp: onTextMouseUp };
+useEffect(() => {
+  if (!drawingList) return;
+  const map = {};
+  for (const d of drawingList) {
+    if (!map[d.page]) map[d.page] = [];
+    map[d.page].push(d);
+  }
+  strokesRef.current = map;
+}, [drawingList]);
+
 
   return (
     <section style={{ padding: 8 }}>
@@ -174,9 +186,13 @@ const [penColor, setPenColor] = useState('#ff0000');
                           onComment={updAnn}
                           onDelete={delAnn}
 
+
                                 penMode={penMode}          /* ➜ ADD */
                         penColor={penColor}        /* ➜ ADD */        
                               strokesRef={strokesRef}    /* ➜ ADD */
+                              bookId={bookId}
+                        onAddStroke={addStroke}
+                        onDeleteStroke={delStroke}
                         />
                       );
                     })}
@@ -198,6 +214,15 @@ const [penColor, setPenColor] = useState('#ff0000');
                       eraserMode={eraserMode}
                       onComment={updAnn}
                       onDelete={delAnn}
+
+                       penMode={penMode}
+                        penColor={penColor}
+                        strokesRef={strokesRef}
+                        onAddStroke={addStroke}
+                        onDeleteStroke={delStroke}
+
+                       
+
                     />
                   );
                 })

@@ -6,6 +6,7 @@ import cors from 'cors';
 import bookRoutes from './routes/bookRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import annotationRoutes from './routes/annotationRoutes.js'
+import drawingRoutes from './routes/drawingRoutes.js'
 dotenv.config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true })); // To parse form data in the re
 app.use('/api/users',userRoutes)
 app.use('/api/books',bookRoutes)
 app.use('/api/annotations',annotationRoutes)
+app.use('/api/drawings',drawingRoutes)
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

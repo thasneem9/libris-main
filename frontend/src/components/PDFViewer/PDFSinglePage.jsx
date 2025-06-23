@@ -3,7 +3,8 @@
 import React, {useRef, useEffect, useCallback } from 'react'; 
 export default function PDFSinglePage({
   pageNumber, scale, pageRef, savePageRect, pageBox,annotations,
-  penMode, penColor, strokesRef, onComment,onDelete,eraserMode,                                              // ➜ UPDATE
+  penMode, penColor, strokesRef, onComment,onDelete,eraserMode,   
+    onAddStroke, onDeleteStroke ,bookId                                           // ➜ UPDATE
 }) {
 
    // ➜ ADD ---------------------------------------------------------------
@@ -72,14 +73,25 @@ export default function PDFSinglePage({
    ctx.stroke();
  };
 
- const up = () => {
-   if (!isDrawing.current) return;
-   isDrawing.current = false;
-   if (!strokesRef.current[pageNumber])
-     strokesRef.current[pageNumber] = [];
-   strokesRef.current[pageNumber].push(currentStroke.current);
-   currentStroke.current = null;
- };
+const up = () => {
+  if (!isDrawing.current) return;
+  isDrawing.current = false;
+
+  const stroke = currentStroke.current;
+  currentStroke.current = null;
+
+  if (!strokesRef.current[pageNumber]) strokesRef.current[pageNumber] = [];
+  strokesRef.current[pageNumber].push(stroke);
+
+  // Add to backend
+  onAddStroke({
+    bookId,
+    page: pageNumber,
+    color: stroke.color,
+    points: stroke.points,
+  
+  });
+};
 
  // PDFSinglePage.jsx
 // ➜ ADD – helpers and eraser logic (place near other refs/handlers)
@@ -116,12 +128,16 @@ const handleEraserClick = (e) => {
   const cy = e.clientY - rect.top;
 
   // 1️⃣ Try erasing stroke first
-  const idx = strokeAtPoint(cx, cy);
-  if (idx > -1) {
-    strokesRef.current[pageNumber].splice(idx, 1);
-    redraw();
-    return;
-  }
+const idx = strokeAtPoint(cx, cy);
+if (idx > -1) {
+  const stroke = strokesRef.current[pageNumber][idx];
+  strokesRef.current[pageNumber].splice(idx, 1);
+  redraw();
+
+  if (stroke._id) onDeleteStroke(stroke._id);  // Call backend delete
+  return;
+}
+
 
   // 2️⃣ Then try highlight deletion
   for (const a of annotations) {
