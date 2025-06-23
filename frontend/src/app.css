@@ -1,15 +1,17 @@
 
 
 body{
-      background-image: url('./images/light_wood.jpeg');
-}
-body, html, #root {
-  margin: 0;
-  padding: 0;
+
+        margin: 0; /* Removes default spacing */
+  background-image: url('./images/soft1.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   height: 100%;
-  width: 100%;
+
  
 }
+
 
 /* PDF Viewer Premium Style */
 body.pdf-viewer-bg {
