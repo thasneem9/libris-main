@@ -21,13 +21,13 @@
 .plank-left, .plank-right{
   
   width:20px;
-  background-color:#c9a150;  ;
+  background-color:var(--plank-primary) ;
 
 }
 .plank-left-dark, .plank-right-dark{
   
   width:20px;
-  background-color:#652f03;  
+  background-color:var(--plank-secondary);  
    clip-path: polygon(4% 0, 96% 0, 100% 100%, 0% 100%);
 
 }
@@ -46,7 +46,7 @@
 .plank-dark{
     width:100%;
     height:20px;
-    background-color: #652f03 ; 
+    background-color: var(--plank-secondary) ; 
     clip-path: polygon(4% 0, 96% 0, 100% 100%, 0% 100%);
 
 /* border: 3px solid black;  */
@@ -54,7 +54,7 @@
 .plank-bottom{
     width:100%;
     height:20px;
-    background-color: #c9a150;
+    background-color: var(--plank-primary);
     /* border: 3px solid black;  */    
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6); 
 

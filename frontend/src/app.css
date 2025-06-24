@@ -1,9 +1,44 @@
+:root {
+/*   --plank-primary:#c9a150;
+  --plank-secondary:#652f03; */  
+/*   
+
+ /* Frosty blue */
+  --plank-primary: #d0e8f2;   
+ --plank-secondary: #a9c2cb;  
+
+/* vintage wood */
+/* --plank-primary: #b88b4a;   
+--plank-secondary: #4a2e14;  */
+
+/* galcofe house axy */
+/* --plank-primary: #a97453;   
+--plank-secondary: #4b2e1d;  */
+
+/* olive home */
+/* --plank-primary: #8a9a5b;  
+--plank-secondary: #3e4a2b;  */
+
+--background-color-frost: #eef7fb;  /* Pale icy blue */
+--background-color-forest: #f5f1e7;  /* Soft parchment white */
+--background-color-wood: #fefaf3;  /* Creamy linen */
+--background-color-space: #100b1f;  /* Deep space blue */
+--background-color-coffee: #fcf5ee;  /* Light cream / foam */
+--background-color-olive: #f2f6ec;  /* Faded leafy green */
+
+
+
+
+
+
+}
 
 
 body{
 
         margin: 0; /* Removes default spacing */
-  background-image: url('./images/soft1.png');
+background-color: var(--background-color-olive);
+
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
