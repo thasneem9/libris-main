@@ -58,3 +58,17 @@ body.pdf-viewer-bg {
   background-attachment: fixed;
   transition: background 0.4s ease;
 }
+body.theme-chooser-bg {
+
+
+  background-size: cover;
+  background-attachment: fixed;
+  transition: background 0.4s ease;
+
+
+   margin: 0;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+}

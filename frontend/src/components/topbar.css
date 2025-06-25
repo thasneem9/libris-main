@@ -1,0 +1,49 @@
+.topbar {
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7752fe, #c8b6ff);
+  padding: 4px;
+}
+
+.search-bar {
+  max-width: 600px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.search-bar input {
+  border-left: none;
+}
+
+.search-bar .input-group-text {
+  background-color: white;
+  border-right: none;
+  color: #666;
+}
+
+.premium-btn {
+  background-color: #c6e6f7;
+  color: #004466;
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  padding: 6px 16px;
+}
+
+.premium-btn:hover {
+  background-color: #b2dff2;
+}
+
+.bell-icon {
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+}

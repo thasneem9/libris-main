@@ -1,0 +1,74 @@
+   h1 {
+      margin-top: 100px;
+      font-size: 2.5em;
+    }
+
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+
+    .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .profile:hover {
+      transform: scale(1.1);
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .thasneem { background: linear-gradient(to bottom, #3a8edb, #1b4f8c); }
+    .afnan    { background: linear-gradient(to bottom, #153d3d, #0b1e1e); }
+    .arya     { background: linear-gradient(to bottom, #ffc400, #a67c00); }
+    .children {
+      background: linear-gradient(to right, #4cbb17, #ff7f50, #ff1493, #1e90ff);
+      font-weight: bold;
+      font-size: 1em;
+      color: white;
+      padding: 0;
+    }
+
+    .add-profile {
+      width: 100px;
+      height: 100px;
+      background-color: #333;
+      border-radius: 10px;
+      font-size: 3em;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .manage-btn {
+      margin-top: 60px;
+      color: gray;
+      border: 1px solid gray;
+      padding: 10px 20px;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .name {
+      font-size: 1em;
+      color: white;
+    }

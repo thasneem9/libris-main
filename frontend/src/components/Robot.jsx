@@ -29,6 +29,7 @@ const Robot = () => {
     title: '',
     author: '',
     category: '',
+    coverImage:'',
     fileName:''
   });
   const [s3Url,setS3Url]=useState('')
@@ -253,6 +254,7 @@ console.log(inputs)
                       <input value={metadata.title} onChange={(e) => setMetadata({...metadata, title: e.target.value})} placeholder="Title" />
                       <input value={metadata.author} onChange={(e) => setMetadata({...metadata, author: e.target.value})} placeholder="Author" />
                       <input value={metadata.category} onChange={(e) => setMetadata({...metadata, category: e.target.value})} placeholder="Category" />
+                      <input value={metadata.imageUrl} onChange={(e) => setMetadata({...metadata, category: e.target.value})} placeholder="Category" />
                       <button  className="save-book" type="button" onClick={handleFileUpload}>Save</button>
                     </div>
             )}
