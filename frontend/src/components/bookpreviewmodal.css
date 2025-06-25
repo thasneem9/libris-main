@@ -1,7 +1,63 @@
-
-
 .frosty-modal .modal-content {
-  background: linear-gradient(to bottom right, #eef7ff, #d6ecff);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
   border: none;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.book-cover {
+  width: 140px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.book-cover:hover {
+  transform: scale(1.02);
+}
+
+.book-buttons .btn {
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.book-buttons .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+}
+
+.sidebar-button {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+
+.frosty-sidebar {
+  min-width: 160px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(200, 200, 200, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+}
+
+.sidebar-btn {
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 6px 16px;
+  transition: 0.2s ease;
+}
+
+.sidebar-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }

@@ -192,7 +192,7 @@ return(
             Add Book ❄️
           </Button>
          <Dropdown>
-  <Dropdown.Toggle variant="outline-primary" className="rounded-pill">
+  <Dropdown.Toggle variant="outline-primary" className="rounded-pill longer">
     <TbColorFilter size={20} className="me-2" />Themes
   </Dropdown.Toggle>
   <Dropdown.Menu>
