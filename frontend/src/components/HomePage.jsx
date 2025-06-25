@@ -164,76 +164,75 @@ console.log(metadataData)
       setFormOpen(true); // show popup/modal to get metadata
     }
   };
-
-
-  return (
+return(
     <>
-    <div className="d-flex homepage">
-      <div className="sidebar p-3 d-flex flex-column justify-content-between">
-        <div>
-          <h4 className="logo mb-4">📚 Libris</h4>
-          <Nav className="flex-column">
-            <Nav.Link onClick={() => setShowModal(true)}>Add Book ❄️</Nav.Link>
-            <Nav.Link>Frosty ❄️</Nav.Link>
-            <Nav.Link>Galaxy 🌌</Nav.Link>
-            <Nav.Link>Coffee ☕</Nav.Link>
-          </Nav>
-        </div>
-        <div>
-          <ul className="sidebar-links">
-            <li>Settings</li>
-            <li>User Account</li>
-            <li>Feed</li>
-            <li>Quotes</li>
-            <li>Game</li>
-            <li>Highlights/Bookmarks</li>
-          </ul>
-          <Button variant="outline-secondary" size="sm">Logout</Button>
-        </div>
-      </div>
-      <div className='d-flex flex-column'>
-        <Topbar/>
-      {/* Main */}
-      <Container fluid className="main-content py-4 px-5">
+  <Topbar />
 
+  <div className="homepage-layout">
+    {/* Sidebar */}
+    <div className="sidebar p-3 d-flex flex-column justify-content-between">
+      <div>
+        <h4 className="logo mb-4">📚 Libris</h4>
+        <Nav className="flex-column gap-2">
+          <Button variant="primary" className="rounded-pill shadow-sm" onClick={() => setShowModal(true)}>
+            Add Book ❄️
+          </Button>
+          <Button variant="outline-primary" className="rounded-pill">Frosty ❄️</Button>
+          <Button variant="outline-secondary" className="rounded-pill">Galaxy 🌌</Button>
+          <Button variant="outline-dark" className="rounded-pill">Coffee ☕</Button>
+        </Nav>
+      </div>
+
+      <div>
+        <ul className="sidebar-links">
+          <li>Settings</li>
+          <li>User Account</li>
+          <li>Feed</li>
+          <li>Quotes</li>
+          <li>Game</li>
+          <li>Highlights/Bookmarks</li>
+        </ul>
+        <Button variant="outline-secondary" size="sm">Logout</Button>
+      </div>
+    </div>
+
+    {/* Main + Right section grouped tightly */}
+    <div className="main-right-wrapper d-flex">
+      {/* Main content */}
+      <div className="main-content p-3">
         <h2 className="main-title">The Grand Library</h2>
 
-     {Object.entries(booksByCategory).map(([category, books]) => (
-  <section className="mb-4" key={category}>
-    <h5 className="section-title">📚 {category}</h5>
-    <div className="book-row d-flex gap-3 flex-wrap">
-      {books.map((book, idx) => (
-        <Card key={idx} className="book-card border-0 shadow-sm">
-          <Card.Img
-            src={book.coverImage || defaultCover}
-            className="rounded"
-            onClick={() => handleOpenBook(book.fileName, book._id)}
-            style={{ cursor: 'pointer' }}
-          />
-          <Card.Body className="p-2">
-            <Card.Title className="fs-6">{book.title}</Card.Title>
-          </Card.Body>
-        </Card>
-      ))}
-    </div>
-  </section>
-))}
-
-
-       
+        {Object.entries(booksByCategory).map(([category, books]) => (
+          <section className="mb-4" key={category}>
+            <h5 className="section-title">📚 {category}</h5>
+            <div className="book-row d-flex gap-3 flex-wrap">
+              {books.map((book, idx) => (
+                <Card key={idx} className="book-card border-0 shadow-sm">
+                  <Card.Img
+                    src={book.coverImage || defaultCover}
+                    className="rounded"
+                    onClick={() => handleOpenBook(book.fileName, book._id)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <Card.Body className="p-2">
+                    <Card.Title className="fs-6">{book.title}</Card.Title>
+                  </Card.Body>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ))}
 
         <section>
-         <h5 className="section-title">🌍 Categories</h5>
-<div className="d-flex gap-3 flex-wrap">
-  {uniqueCategories.map((cat, idx) => (
-    <div key={idx} className="category-pill px-3 py-1 rounded bg-light border">
-      {cat}
-    </div>
-  ))}
-</div>
-
+          <h5 className="section-title">🌍 Categories</h5>
+          <div className="d-flex gap-3 flex-wrap">
+            {uniqueCategories.map((cat, idx) => (
+              <div key={idx} className="category-pill px-3 py-1 rounded bg-light border">
+                {cat}
+              </div>
+            ))}
+          </div>
         </section>
-      </Container>
       </div>
 
       {/* Right Sidebar */}
@@ -260,20 +259,22 @@ console.log(metadataData)
         </Card>
       </div>
     </div>
+  </div>
 
-    <AddBookModal
-  show={showModal}
-  onHide={() => setShowModal(false)}
-  formOpen={formOpen}
-  handleChooseFile={handleChooseFile}
-  handleFileChange={handleFileChange}
-  handleCoverImageChange={handleCoverImageChange}
-  handleFileUpload={handleFileUpload}
-  metadata={metadata}
-  setMetadata={setMetadata}
-/>
+  {/* Modal */}
+  <AddBookModal
+    show={showModal}
+    onHide={() => setShowModal(false)}
+    formOpen={formOpen}
+    handleChooseFile={handleChooseFile}
+    handleFileChange={handleFileChange}
+    handleCoverImageChange={handleCoverImageChange}
+    handleFileUpload={handleFileUpload}
+    metadata={metadata}
+    setMetadata={setMetadata}
+  />
 </>
-  );
-};
 
-export default Homepage;
+)
+}
+export default Homepage

@@ -1,20 +1,55 @@
-.homepage {
-  background-color: #f5fafd;
-  font-family: 'Segoe UI', sans-serif;
+.homepage-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5fafd;
+}
+
+.main-right-wrapper {
+  display: flex;
+  gap: 24px; /* 👈 control spacing between main and right sidebar */
+  flex: 1;
+}
+
+.main-content {
+  max-width: 720px;
+  width: 100%;
+}
+
+.right-sidebar {
+  width: 280px;
+  background: #fdfdfd;
+  border-left: 1px solid #eee;
+}
+
+
+
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background: white;
 }
 
 .sidebar {
   width: 220px;
-  background-color: #eef4fb;
-}
-
-.logo {
-  font-weight: 600;
+  background: #ffffff;
+  border-right: 1px solid #eee;
+   
 }
 
 .sidebar .nav-link {
   color: #333;
   padding: 8px 0;
+}
+
+.sidebar .btn:hover {
+  box-shadow: 0 0 0 2px #c0d3f5;
+  transition: all 0.2s ease-in-out;
+}
+
+.logo {
+  font-weight: 600;
 }
 
 .active-tab {
@@ -34,24 +69,8 @@
   margin-bottom: 8px;
 }
 
-.main-content {
-  background-color: #f5fafd;
-  flex-grow: 1;
-    padding-top: 20px;
-}
 
 
-.search-box input {
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  padding: 8px;
-}
-
-.unlock-btn {
-  background-color: #d6ecff;
-  border: none;
-  color: #000;
-}
 
 .main-title {
   font-size: 2rem;
@@ -69,6 +88,12 @@
   height: 180px;
   object-fit: cover;
   border-radius: 6px;
+  
+}
+
+.book-card:hover {
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
 }
 
 .category-icon {
@@ -77,26 +102,15 @@
   object-fit: cover;
 }
 
-.right-sidebar {
-  width: 280px;
-
-margin:auto;
-  background-color: #f9f9f9; /* Optional: change bg for visual separation */
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
-  position: relative; /* Ensure stacking correctly */
-}
 
 .bar-graph .bar {
   width: 10px;
   background-color: #66aaff;
   border-radius: 4px;
 }
-.homepage-container {
-  background: #f5fafd;
-  min-height: 100vh;
-}
+
 .category-pill {
-  background: linear-gradient(to right, #f3f4f6, #e2e8f0); /* soft gray gradient */
+  background: linear-gradient(to right, #f3f4f6, #e2e8f0);
   color: #333;
   font-weight: 500;
   font-size: 14px;
@@ -109,6 +123,7 @@ margin:auto;
 }
 
 .category-pill:hover {
-  background: linear-gradient(to right, #dbeafe, #bfdbfe); /* soft blue on hover */
+  background: linear-gradient(to right, #dbeafe, #bfdbfe);
   transform: scale(1.05);
 }
+
