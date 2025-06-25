@@ -1,6 +1,7 @@
 import React from 'react';
 import './Topbar.css';
-import { FaSearch, FaBell } from 'react-icons/fa';
+import { FaSearch, FaBell  } from 'react-icons/fa';
+import { PiBooksLight } from "react-icons/pi";
 import { Button, FormControl, InputGroup, Image } from 'react-bootstrap';
 
 const Topbar = () => {
@@ -9,9 +10,9 @@ const Topbar = () => {
       {/* Left logo */}
       <div className="d-flex align-items-center">
         <div className="logo-icon me-2">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/OOjs_UI_icon_book.svg/2048px-OOjs_UI_icon_book.svg.png" alt="logo" />
+    <PiBooksLight size={40} />
         </div>
-        <h5 className="m-0 fw-semibold">Libris</h5>
+<h5 className="m-0 fw-semibold fs-3 mr-5"  >Libris</h5>
       </div>
 
       {/* Search */}

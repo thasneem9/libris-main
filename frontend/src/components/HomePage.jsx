@@ -8,6 +8,20 @@ import { useNavigate } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
 import BookPreviewModal from './BookPreviewModal';
 
+import {
+  FaCog,
+  FaUser,
+  FaRss,
+  FaQuoteRight,
+  FaGamepad,
+  FaBookmark,
+  FaSignOutAlt
+} from 'react-icons/fa';
+
+
+
+
+
 const Homepage = () => {
     const navigate=useNavigate();
     const [allBooks, setAllBooks] = useState([]);
@@ -182,16 +196,20 @@ return(
       </div>
 
       <div>
-        <ul className="sidebar-links">
-          <li>Settings</li>
-          <li>User Account</li>
-          <li>Feed</li>
-          <li>Quotes</li>
-          <li>Game</li>
-          <li>Highlights/Bookmarks</li>
-        </ul>
-        <Button variant="outline-secondary" size="sm">Logout</Button>
-      </div>
+  <ul className="sidebar-links">
+    <li><FaCog className="me-2" /> Settings</li>
+    <li><FaUser className="me-2" /> User Account</li>
+    <li><FaRss className="me-2" /> Feed</li>
+    <li><FaQuoteRight className="me-2" /> Quotes</li>
+    <li><FaGamepad className="me-2" /> Game</li>
+    <li><FaBookmark className="me-2" /> Highlights/Bookmarks</li>
+  </ul>
+
+  <Button variant="outline-secondary" size="sm" className="mt-2">
+    <FaSignOutAlt className="me-2" />
+    Logout
+  </Button>
+</div>
     </div>
 
     {/* Main + Right section grouped tightly */}
