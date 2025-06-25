@@ -7,7 +7,8 @@ import AddBookModal from './AddBookModal';
 import { useNavigate } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
 import BookPreviewModal from './BookPreviewModal';
-
+import { PiBooksLight } from "react-icons/pi";
+import { BiCategoryAlt } from "react-icons/bi";
 import {
   FaCog,
   FaUser,
@@ -18,8 +19,9 @@ import {
   FaSignOutAlt
 } from 'react-icons/fa';
 
+import { TbColorFilter } from "react-icons/tb";
 
-
+import { Dropdown } from 'react-bootstrap';
 
 
 const Homepage = () => {
@@ -182,35 +184,43 @@ return(
 
   <div className="homepage-layout">
     {/* Sidebar */}
-    <div className="sidebar p-3 d-flex flex-column justify-content-between">
-      <div>
-        <h4 className="logo mb-4">📚 Libris</h4>
+   <div className="sidebar p-3 d-flex flex-column justify-content-between">
+  <div>
+    <h4 className="logo mb-4">📚 Libris</h4>
         <Nav className="flex-column gap-2">
           <Button variant="primary" className="rounded-pill shadow-sm" onClick={() => setShowModal(true)}>
             Add Book ❄️
           </Button>
-          <Button variant="outline-primary" className="rounded-pill">Frosty ❄️</Button>
-          <Button variant="outline-secondary" className="rounded-pill">Galaxy 🌌</Button>
-          <Button variant="outline-dark" className="rounded-pill">Coffee ☕</Button>
+         <Dropdown>
+  <Dropdown.Toggle variant="outline-primary" className="rounded-pill">
+    <TbColorFilter size={20} className="me-2" />Themes
+  </Dropdown.Toggle>
+  <Dropdown.Menu>
+    <Dropdown.Item>❄️ Frosty</Dropdown.Item>
+    <Dropdown.Item>🌌 Galaxy</Dropdown.Item>
+    <Dropdown.Item>☕ Coffee</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown>
+
+        
         </Nav>
       </div>
 
-      <div>
-  <ul className="sidebar-links">
-    <li><FaCog className="me-2" /> Settings</li>
-    <li><FaUser className="me-2" /> User Account</li>
-    <li><FaRss className="me-2" /> Feed</li>
-    <li><FaQuoteRight className="me-2" /> Quotes</li>
-    <li><FaGamepad className="me-2" /> Game</li>
-    <li><FaBookmark className="me-2" /> Highlights/Bookmarks</li>
-  </ul>
-
-  <Button variant="outline-secondary" size="sm" className="mt-2">
-    <FaSignOutAlt className="me-2" />
-    Logout
-  </Button>
+   <div className="sidebar-links-wrapper">
+    <ul className="sidebar-links">
+      <li><FaCog className="me-2" /> Settings</li>
+      <li><FaUser className="me-2" /> User Account</li>
+      <li><FaRss className="me-2" /> Feed</li>
+      <li><FaQuoteRight className="me-2" /> Quotes</li>
+      <li><FaGamepad className="me-2" /> Game</li>
+      <li><FaBookmark className="me-2" /> Highlights/Bookmarks</li>
+    </ul>
+    <Button variant="outline-secondary" size="sm" className="mt-2">
+      <FaSignOutAlt className="me-2" />
+      Logout
+    </Button>
+  </div>
 </div>
-    </div>
 
     {/* Main + Right section grouped tightly */}
     <div className="main-right-wrapper d-flex">
@@ -220,7 +230,7 @@ return(
 
         {Object.entries(booksByCategory).map(([category, books]) => (
           <section className="mb-4" key={category}>
-            <h5 className="section-title">📚 {category}</h5>
+            <h5 className="section-title"> <PiBooksLight size={30}/> {category}</h5>
             <div className="book-row ">
             {books.map((book, idx) => (
   <Card key={idx} className="book-card border-0 shadow-sm">
@@ -242,25 +252,21 @@ return(
 
 {/* Plus card at the end */}
 <Card
- onClick={() => setShowModal(true)}
-  className="book-card border-0 shadow-sm d-flex align-items-center justify-content-center plus-card"
-  style={{ cursor: 'pointer' }}
->
-  <div className="text-center text-muted">
-    <div style={{ fontSize: '2.5rem' }}>
-<IoAddCircleOutline size={40} />
+  onClick={() => setShowModal(true)}
+  className="book-card add-book-card d-flex flex-column align-items-center justify-content-center"
 
-    </div>
-    <div>Add Book</div>
-  </div>
+>
+  <IoAddCircleOutline size={50} className="add-icon mb-2" />
+  <div className="add-text">Add Book</div>
 </Card>
+
 
             </div>
           </section>
         ))}
 
         <section>
-          <h5 className="section-title">🌍 Categories</h5>
+          <h5 className="section-title"><BiCategoryAlt size={30} /> Categories</h5>
           <div className="d-flex gap-3 flex-wrap">
             {uniqueCategories.map((cat, idx) => (
               <div key={idx} className="category-pill px-3 py-1 rounded bg-light border">

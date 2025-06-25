@@ -39,12 +39,14 @@
 
 
 
+
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 1020;
-  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
 }
+
 
 .sidebar {
   width: 220px;
@@ -76,7 +78,7 @@
 .sidebar-links {
   list-style: none;
   padding-left: 0;
-  margin-top: 1rem;
+
   font-size: 0.9rem;
 }
 
@@ -93,10 +95,15 @@
   margin-bottom: 1.5rem;
 }
 
+
 .section-title {
-  margin-bottom: 1rem;
+  margin: 2rem 0 1rem;
   font-weight: 600;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
 }
+
 
 .book-row .book-card img {
   width: 120px;
@@ -105,15 +112,16 @@
   border-radius: 6px;
   
 }
-.book-row{
-     display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
-  gap: 1.5rem; /* spacing between cards */
+.book-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1.5rem;
 }
 
+
 .book-card:hover {
-  transform: scale(1.2);
-  transition: transform 0.3s ease;
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
 .category-icon {
@@ -127,6 +135,14 @@
   width: 10px;
   background-color: #66aaff;
   border-radius: 4px;
+}
+
+@keyframes grow {
+  from { height: 0; }
+  to { height: inherit; }
+}
+.bar {
+  animation: grow 0.6s ease;
 }
 
 .category-pill {
@@ -145,4 +161,47 @@
 .category-pill:hover {
   background: linear-gradient(to right, #dbeafe, #bfdbfe);
   transform: scale(1.05);
+}
+
+.sidebar .sidebar-links-wrapper {
+  margin-bottom: 110px; 
+  margin-left:13px;
+ 
+}
+
+li {
+  font-size: 15px;
+}
+
+.add-book-card {
+  width: 120px;
+  height: 180px;
+  border: 2px dashed #c3dafe;
+  border-radius: 10px;
+  background: #f0f4ff;
+  color: #3b82f6;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.add-book-card:hover {
+  background: #e0ecff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: #93c5fd;
+}
+
+.add-icon {
+  color: #3b82f6;
+  transition: transform 0.3s ease;
+}
+
+.add-book-card:hover .add-icon {
+  transform: rotate(90deg);
+}
+
+.add-text {
+  font-weight: 500;
+  font-size: 14px;
+  color: #3b82f6;
 }
