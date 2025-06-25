@@ -49,15 +49,15 @@ const Book = () => {
   getBooks();
  },[])
 
-const handleOpenBook = (bookUrl,bookId) => {
-  setSelectedPdfUrl(bookUrl);
-  console.log("book id paassed:--",bookId)
- navigate("/pdf-viewer", {
-  state: {
-    bookUrl: bookUrl,
-    bookId: bookId
-  }
-});
+  const handleOpenBook = (bookUrl,bookId) => {
+    setSelectedPdfUrl(bookUrl);
+    console.log("book id paassed:--",bookId)
+  navigate("/pdf-viewer", {
+    state: {
+      bookUrl: bookUrl,
+      bookId: bookId
+    }
+  });
 
 };
 

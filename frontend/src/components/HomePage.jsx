@@ -4,7 +4,7 @@ import { FaMagic, FaClock } from 'react-icons/fa';
 import { Container, Row, Col, Card, Button, InputGroup, FormControl, Nav } from 'react-bootstrap';
 import Topbar from './Topbar';
 import AddBookModal from './AddBookModal';
-
+import { useNavigate } from 'react-router-dom';
 const ancientBooks = [
   "https://picsum.photos/120/180?random=7",
   "https://picsum.photos/120/180?random=8",
@@ -13,19 +13,13 @@ const ancientBooks = [
   "https://picsum.photos/120/180?random=11"
 ];
 
-const categories = [
-  "https://picsum.photos/70?random=12",
-  "https://picsum.photos/70?random=13",
-  "https://picsum.photos/70?random=14",
-  "https://picsum.photos/70?random=15",
-  "https://picsum.photos/70?random=16",
-  "https://picsum.photos/70?random=17"
-];
+
 
 const Homepage = () => {
+    const navigate=useNavigate();
     const [allBooks, setAllBooks] = useState([]);
 const [uniqueCategories, setUniqueCategories] = useState([]);
-
+  const [selectedPdfUrl, setSelectedPdfUrl] = useState(null);
 
     const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
@@ -85,7 +79,15 @@ useEffect(() => {
   getBooks();
 }, []);
 
-
+const handleOpenBook = (bookUrl,bookId) => {
+  setSelectedPdfUrl(bookUrl);
+  console.log("book id paassed:--",bookId)
+ navigate("/pdf-viewer", {
+  state: {
+    bookUrl: bookUrl,
+    bookId: bookId
+  }
+})}
  const handleChooseFile = () => {
     document.getElementById('hiddenPdfInput').click();
   };
@@ -162,6 +164,8 @@ console.log(metadataData)
       setFormOpen(true); // show popup/modal to get metadata
     }
   };
+
+
   return (
     <>
     <div className="d-flex homepage">
