@@ -6,17 +6,7 @@ import Topbar from './Topbar';
 import AddBookModal from './AddBookModal';
 import { useNavigate } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
-
-
-const ancientBooks = [
-  "https://picsum.photos/120/180?random=7",
-  "https://picsum.photos/120/180?random=8",
-  "https://picsum.photos/120/180?random=9",
-  "https://picsum.photos/120/180?random=10",
-  "https://picsum.photos/120/180?random=11"
-];
-
-
+import BookPreviewModal from './BookPreviewModal';
 
 const Homepage = () => {
     const navigate=useNavigate();
@@ -28,7 +18,12 @@ const [uniqueCategories, setUniqueCategories] = useState([]);
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
+const [selectedBook, setSelectedBook] = useState(null);
+const [previewOpen, setPreviewOpen] = useState(false);
+
+
   const [metadata, setMetadata] = useState({
+
     title: '',
     author: '',
     category: '',
@@ -211,12 +206,16 @@ return(
             <div className="book-row ">
             {books.map((book, idx) => (
   <Card key={idx} className="book-card border-0 shadow-sm">
-    <Card.Img
-      src={book.coverImage || defaultCover}
-      className="rounded"
-      onClick={() => handleOpenBook(book.fileName, book._id)}
-      style={{ cursor: 'pointer' }}
-    />
+   <Card.Img
+  src={book.coverImage || defaultCover}
+  className="rounded"
+  onClick={() => {
+    setSelectedBook(book);
+    setPreviewOpen(true);
+  }}
+  style={{ cursor: 'pointer' }}
+/>
+
     <Card.Body className="p-2">
       <Card.Title className="fs-6">{book.title}</Card.Title>
     </Card.Body>
@@ -292,7 +291,15 @@ return(
     metadata={metadata}
     setMetadata={setMetadata}
   />
+  <BookPreviewModal
+  show={previewOpen}
+  onHide={() => setPreviewOpen(false)}
+  book={selectedBook}
+  handleOpenBook={() => handleOpenBook(selectedBook.fileName, selectedBook._id)}
+/>
+
 </>
+
 
 )
 }
