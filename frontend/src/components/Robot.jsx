@@ -8,9 +8,7 @@ import { S3UrlContext } from '../contexts/s3urlContext';
 
 const Robot = () => {
     const [settings, setSettings]=useState(false);
-  
     const [rightCol, setRightCol]=useState('account')
-
     const [inputs,setInputs]=useState({
       name:'',
       username:'',
@@ -21,7 +19,6 @@ const Robot = () => {
       username:'',
       password:''
     })
-
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -32,20 +29,21 @@ const Robot = () => {
     coverImage:'',
     fileName:''
   });
-  const [s3Url,setS3Url]=useState('')
+  const [coverImageFile, setCoverImageFile] = useState(null);
+const handleCoverImageChange = (e) => {
+  const imageFile = e.target.files[0];
+  setCoverImageFile(imageFile);
+};
 
+  const [s3Url,setS3Url]=useState('')
 
  const handleChooseFile = () => {
     document.getElementById('hiddenPdfInput').click();
   };
   const handleFileUpload = async () => {
     //sendJUST file to AWS using fetch..not array it was single...
-    
-
        const formData=new FormData();
         formData.append('pdf', file);
-      
-     
     const res = await fetch('/api/books/upload', {
       method: 'POST',
       body: formData,
@@ -53,7 +51,6 @@ const Robot = () => {
     });
     const data=await res.json();
     console.log(data)
-
     if (res.ok) {
       alert('Book was uploaded!');
       setFormOpen(false);
@@ -64,6 +61,20 @@ const Robot = () => {
     setS3Url(s3Url);  // for example, store in state
 
 
+     // ✅ Upload Cover Image to Cloudinary
+let coverImageUrl = '';
+  if (coverImageFile) {
+    const imageFormData = new FormData();
+    imageFormData.append('cover', coverImageFile);
+
+    const imgRes = await fetch('/api/books/upload-cover', {
+      method: 'POST',
+      body: imageFormData,
+    });
+
+    const imgData = await imgRes.json();
+    coverImageUrl = imgData.url;
+  }
       const metadataRes = await fetch('/api/books/addBook', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -72,6 +83,7 @@ const Robot = () => {
       author: metadata.author,
       category: metadata.category,
       fileName:s3Url,
+      coverImage:coverImageUrl
     }),
   });
 //SEND META DATA TO MONGODB SO THAT TITLE CAN APPEAR DYNAMICALY-----
@@ -254,8 +266,10 @@ console.log(inputs)
                       <input value={metadata.title} onChange={(e) => setMetadata({...metadata, title: e.target.value})} placeholder="Title" />
                       <input value={metadata.author} onChange={(e) => setMetadata({...metadata, author: e.target.value})} placeholder="Author" />
                       <input value={metadata.category} onChange={(e) => setMetadata({...metadata, category: e.target.value})} placeholder="Category" />
-                      <input value={metadata.imageUrl} onChange={(e) => setMetadata({...metadata, category: e.target.value})} placeholder="Category" />
-                      <button  className="save-book" type="button" onClick={handleFileUpload}>Save</button>
+                      {/*  <input value={metadata.coverImage} onChange={(e) => setMetadata({...metadata, coverImage: e.target.value})} placeholder="CoverImage" /> */}    
+                      <input type="file"accept="image/*" onChange={handleCoverImageChange}/>
+
+                    <button  className="save-book" type="button" onClick={handleFileUpload}>Save</button>
                     </div>
             )}
 {/*             <button className="save-book"type="button" onClick={handleAddBook}>Import Book</button>*/}    

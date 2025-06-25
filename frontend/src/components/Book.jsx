@@ -69,7 +69,7 @@ const handleOpenBook = (bookUrl,bookId) => {
       {
         books.map((book,index)=>(
         <>
-        <div    key={index}  className='book'  style={{ backgroundImage: `url(${book?.imageUrl || defaultCover})` }}  onClick={() => handleOpenBook(book?.fileName,book?._id)}>  {book?.title || ''}</div>
+        <div    key={index}  className='book'  style={{ backgroundImage: `url(${book?.coverImage || defaultCover})` }}  onClick={() => handleOpenBook(book?.fileName,book?._id)}>  {book?.title || ''}</div>
         </>
         ))
       } 

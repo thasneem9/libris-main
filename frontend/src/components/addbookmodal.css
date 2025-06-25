@@ -1,0 +1,48 @@
+.add-book-modal .modal-content {
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f0f4ff, #ffffff);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: none;
+  padding: 20px;
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inner-box {
+  border: 2px dashed #c0d3f5;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  background-color: #f7faff;
+  transition: border-color 0.3s ease;
+}
+
+.inner-box:hover {
+  border-color: #7ab6f2;
+}
+
+.book-icon {
+  color: #6a8fdb;
+}
+
+.popup-form input {
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.save-book-btn {
+  background-color: #a7d1f5;
+  color: #00334e;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.save-book-btn:hover {
+  background-color: #8dc3f0;
+}

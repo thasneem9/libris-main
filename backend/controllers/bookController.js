@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import multer from "multer";
 import multerS3 from "multer-s3";
 import AWS from "aws-sdk";
+import cloudinary from '../utils/cloudinary.js';
 
+import streamifier from 'streamifier'
 dotenv.config();
 
 const s3 = new AWS.S3({
@@ -40,9 +42,9 @@ const uploadToAws = (req, res) => {
 
 const addBook=async(req,res)=>{
     try {
-        const {title,author,category,fileName}=req.body;
+        const {title,author,category,fileName,coverImage}=req.body;
         const userId="6837dbd20a4cf1792085e993"
-        const newBook= new Book({title,author,category,userId,coverImage:null,fileName})
+        const newBook= new Book({title,author,category,userId,coverImage,fileName})
         await newBook.save();
 
         res.status(200).json({messgae:"SUUCESSFULT SAVED BOOK DETAILS",newBook})
@@ -94,8 +96,34 @@ const removeBook = async (req, res) => {
     res.status(500).json({ error: "Failed to remove book", details: err.message });
   }
 };
+// For cover image upload to Cloudinary
+const memoryUpload = multer(); // defaults to memoryStorage
+
+const uploadCover = [
+  memoryUpload.single('cover'),
+  async (req, res) => {
+    try {
+      const streamUpload = (buffer) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: 'book_covers' },
+            (error, result) => {
+              if (result) resolve(result);
+              else reject(error);
+            }
+          );
+          streamifier.createReadStream(buffer).pipe(stream);
+        });
+      };
+
+      const result = await streamUpload(req.file.buffer);
+      res.json({ url: result.secure_url });
+    } catch (err) {
+      console.error('Cloudinary error:', err);
+      res.status(500).json({ error: 'Upload failed' });
+    }
+  }
+];
 
 
-
-
-export {addBook,getBooks, uploadToAws, removeBook} 
+export {addBook,getBooks, uploadToAws, removeBook,uploadCover} 

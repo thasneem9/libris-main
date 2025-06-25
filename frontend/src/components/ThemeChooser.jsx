@@ -13,6 +13,9 @@ const navigate=useNavigate()
 
   }
 
+  const handleFiction=()=>{
+     navigate("/fiction")
+  }
     return(
 
         <>
@@ -23,7 +26,7 @@ const navigate=useNavigate()
       <div className="avatar thasneem">😊</div>
       <div className="name">All Books</div>
     </div>
-    <div className="profile">
+    <div className="profile" onClick={handleFiction}>
       <div className="avatar afnan">😊</div>
       <div className="name">Fiction</div>
     </div>

@@ -1,9 +1,9 @@
-import React from 'react';
+import React ,{useState}from 'react';
 import './Homepage.css';
 import { FaMagic, FaClock } from 'react-icons/fa';
 import { Container, Row, Col, Card, Button, InputGroup, FormControl, Nav } from 'react-bootstrap';
 import Topbar from './Topbar';
-
+import AddBookModal from './AddBookModal';
 const books = [
   "https://picsum.photos/120/180?random=1",
   "https://picsum.photos/120/180?random=2",
@@ -31,13 +31,110 @@ const categories = [
 ];
 
 const Homepage = () => {
+    const [showModal, setShowModal] = useState(false);
+  const [file, setFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [metadata, setMetadata] = useState({
+    title: '',
+    author: '',
+    category: '',
+    coverImage:'',
+    fileName:''
+  });
+  const [coverImageFile, setCoverImageFile] = useState(null);
+const handleCoverImageChange = (e) => {
+  const imageFile = e.target.files[0];
+  setCoverImageFile(imageFile);
+};
+
+  const [s3Url,setS3Url]=useState('')
+
+ const handleChooseFile = () => {
+    document.getElementById('hiddenPdfInput').click();
+  };
+  const handleFileUpload = async () => {
+    //sendJUST file to AWS using fetch..not array it was single...
+       const formData=new FormData();
+        formData.append('pdf', file);
+    const res = await fetch('/api/books/upload', {
+      method: 'POST',
+      body: formData,
+       credentials:'include',
+    });
+    const data=await res.json();
+    console.log(data)
+    if (res.ok) {
+      alert('Book was uploaded!');
+      setFormOpen(false);
+    }
+    // save the S3 URL for rendering later
+    const s3Url = data.file.location;
+/*     console.log("s3 url: ",s3Url) */
+    setS3Url(s3Url);  // for example, store in state
+
+
+     // ✅ Upload Cover Image to Cloudinary
+let coverImageUrl = '';
+  if (coverImageFile) {
+    const imageFormData = new FormData();
+    imageFormData.append('cover', coverImageFile);
+
+    const imgRes = await fetch('/api/books/upload-cover', {
+      method: 'POST',
+      body: imageFormData,
+    });
+
+    const imgData = await imgRes.json();
+    coverImageUrl = imgData.url;
+  }
+      const metadataRes = await fetch('/api/books/addBook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: metadata.title,
+      author: metadata.author,
+      category: metadata.category,
+      fileName:s3Url,
+      coverImage:coverImageUrl
+    }),
+  });
+//SEND META DATA TO MONGODB SO THAT TITLE CAN APPEAR DYNAMICALY-----
+
+  const metadataData = await metadataRes.json();
+console.log(metadataData)
+  if (metadataRes.ok) {
+    alert('Book metadata saved successfully!');
+    setFormOpen(false);
+  } else {
+    alert('Saving metadata failed');
+  }
+
+
+  };
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile && selectedFile.type === 'application/pdf') {
+      setFile(selectedFile);
+
+
+
+       setMetadata((prev) => ({
+        ...prev,
+        title: selectedFile.name.replace('.pdf', ''),
+      }));
+      setFormOpen(true); // show popup/modal to get metadata
+    }
+  };
   return (
+    <>
     <div className="d-flex homepage">
       <div className="sidebar p-3 d-flex flex-column justify-content-between">
         <div>
           <h4 className="logo mb-4">📚 Libris</h4>
           <Nav className="flex-column">
-            <Nav.Link className="active-tab">Frosty ❄️</Nav.Link>
+            <Nav.Link onClick={() => setShowModal(true)}>Add Book ❄️</Nav.Link>
+            <Nav.Link>Frosty ❄️</Nav.Link>
             <Nav.Link>Galaxy 🌌</Nav.Link>
             <Nav.Link>Coffee ☕</Nav.Link>
           </Nav>
@@ -118,6 +215,19 @@ const Homepage = () => {
         </Card>
       </div>
     </div>
+
+    <AddBookModal
+  show={showModal}
+  onHide={() => setShowModal(false)}
+  formOpen={formOpen}
+  handleChooseFile={handleChooseFile}
+  handleFileChange={handleFileChange}
+  handleCoverImageChange={handleCoverImageChange}
+  handleFileUpload={handleFileUpload}
+  metadata={metadata}
+  setMetadata={setMetadata}
+/>
+</>
   );
 };
 
