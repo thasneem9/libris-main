@@ -19,8 +19,9 @@ const navigate=useNavigate()
     return(
 
         <>
-      
-  <h1>What Are You Reading?</h1>
+      <div className='theme-heading'>
+  <h1 >What Are You Reading?</h1>
+  </div>
   <div className="profile-container">
     <div className="profile" onClick={handleAllBooks}>
       <div className="avatar thasneem">😊</div>

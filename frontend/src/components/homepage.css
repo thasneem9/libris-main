@@ -2,16 +2,17 @@
   display: flex;
   min-height: 100vh;
   background: #f5fafd;
+  
 }
 
 .main-right-wrapper {
   display: flex;
-  gap: 24px; /* 👈 control spacing between main and right sidebar */
+  gap: 100px; /* 👈 control spacing between main and right sidebar */
   flex: 1;
 }
 
 .main-content {
-  max-width: 720px;
+  max-width: 728px;
   width: 100%;
 }
 
@@ -20,6 +21,20 @@
   background: #fdfdfd;
   border-left: 1px solid #eee;
 }
+
+.plus-card {
+  width: 120px;
+  height: 180px;
+  border-radius: 6px;
+  background-color: #f0f4ff;
+  transition: background-color 0.3s ease;
+}
+
+.plus-card:hover {
+  background-color: #d6ecff;
+  transform: scale(1.05);
+}
+
 
 
 
@@ -89,6 +104,11 @@
   object-fit: cover;
   border-radius: 6px;
   
+}
+.book-row{
+     display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  gap: 1.5rem; /* spacing between cards */
 }
 
 .book-card:hover {

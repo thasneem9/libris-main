@@ -5,6 +5,9 @@ import { Container, Row, Col, Card, Button, InputGroup, FormControl, Nav } from 
 import Topbar from './Topbar';
 import AddBookModal from './AddBookModal';
 import { useNavigate } from 'react-router-dom';
+import { IoAddCircleOutline } from "react-icons/io5";
+
+
 const ancientBooks = [
   "https://picsum.photos/120/180?random=7",
   "https://picsum.photos/120/180?random=8",
@@ -205,20 +208,36 @@ return(
         {Object.entries(booksByCategory).map(([category, books]) => (
           <section className="mb-4" key={category}>
             <h5 className="section-title">📚 {category}</h5>
-            <div className="book-row d-flex gap-3 flex-wrap">
-              {books.map((book, idx) => (
-                <Card key={idx} className="book-card border-0 shadow-sm">
-                  <Card.Img
-                    src={book.coverImage || defaultCover}
-                    className="rounded"
-                    onClick={() => handleOpenBook(book.fileName, book._id)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <Card.Body className="p-2">
-                    <Card.Title className="fs-6">{book.title}</Card.Title>
-                  </Card.Body>
-                </Card>
-              ))}
+            <div className="book-row ">
+            {books.map((book, idx) => (
+  <Card key={idx} className="book-card border-0 shadow-sm">
+    <Card.Img
+      src={book.coverImage || defaultCover}
+      className="rounded"
+      onClick={() => handleOpenBook(book.fileName, book._id)}
+      style={{ cursor: 'pointer' }}
+    />
+    <Card.Body className="p-2">
+      <Card.Title className="fs-6">{book.title}</Card.Title>
+    </Card.Body>
+  </Card>
+))}
+
+{/* Plus card at the end */}
+<Card
+ onClick={() => setShowModal(true)}
+  className="book-card border-0 shadow-sm d-flex align-items-center justify-content-center plus-card"
+  style={{ cursor: 'pointer' }}
+>
+  <div className="text-center text-muted">
+    <div style={{ fontSize: '2.5rem' }}>
+<IoAddCircleOutline size={40} />
+
+    </div>
+    <div>Add Book</div>
+  </div>
+</Card>
+
             </div>
           </section>
         ))}

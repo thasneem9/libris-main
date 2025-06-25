@@ -71,7 +71,7 @@ const [penColor, setPenColor] = useState('#ff0000');
   const confirmColour = (col, cmt='') => {
     addAnn({ ...picker.info, color: col, bookId, ...(cmt && {comment:cmt}) });
     setPicker(null);
-  };
+  };  
 
   const addWithComment = () => {
     const c=prompt('Enter comment');
@@ -121,6 +121,7 @@ useEffect(() => {
           }}
         />
         <PiHighlighterLight 
+        size={30}
           className={`pdf-btn icon ${highlightMode ? 'active' : ''}`}
           title="Highlight text"
           onClick={() => {
