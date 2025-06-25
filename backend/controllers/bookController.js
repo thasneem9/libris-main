@@ -125,5 +125,22 @@ const uploadCover = [
   }
 ];
 
+const getCategories = async (req, res) => {
+  try {
+    const userId = "6837dbd20a4cf1792085e993";
+    const books = await Book.find({ userId });
 
-export {addBook,getBooks, uploadToAws, removeBook,uploadCover} 
+    const categoriesSet = new Set();
+    books.forEach((book) => {
+      if (book.category) categoriesSet.add(book.category);
+    });
+
+    const categories = Array.from(categoriesSet);
+    res.status(200).json({ categories });
+  } catch (err) {
+    console.error('Failed to fetch categories', err);
+    res.status(500).json({ error: 'Failed to fetch categories' });
+  }
+};
+
+export {addBook,getBooks, uploadToAws, removeBook,uploadCover,getCategories} 

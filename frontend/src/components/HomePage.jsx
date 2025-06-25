@@ -1,17 +1,9 @@
-import React ,{useState}from 'react';
+import React ,{useState,useEffect}from 'react';
 import './Homepage.css';
 import { FaMagic, FaClock } from 'react-icons/fa';
 import { Container, Row, Col, Card, Button, InputGroup, FormControl, Nav } from 'react-bootstrap';
 import Topbar from './Topbar';
 import AddBookModal from './AddBookModal';
-const books = [
-  "https://picsum.photos/120/180?random=1",
-  "https://picsum.photos/120/180?random=2",
-  "https://picsum.photos/120/180?random=3",
-  "https://picsum.photos/120/180?random=4",
-  "https://picsum.photos/120/180?random=5",
-  "https://picsum.photos/120/180?random=6"
-];
 
 const ancientBooks = [
   "https://picsum.photos/120/180?random=7",
@@ -31,6 +23,10 @@ const categories = [
 ];
 
 const Homepage = () => {
+    const [allBooks, setAllBooks] = useState([]);
+const [uniqueCategories, setUniqueCategories] = useState([]);
+
+
     const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
@@ -49,6 +45,46 @@ const handleCoverImageChange = (e) => {
 };
 
   const [s3Url,setS3Url]=useState('')
+const [booksByCategory, setBooksByCategory] = useState({});
+
+
+useEffect(() => {
+  const getBooks = async () => {
+    try {
+      const res = await fetch('/api/books/getBookData', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+      if (!data.error) {
+        setAllBooks(data.books); // ✅ Fix 1
+
+        // ✅ Group books by category
+        const grouped = {};
+        data.books.forEach(book => {
+          const cat = book.category || 'Uncategorized';
+          if (!grouped[cat]) grouped[cat] = [];
+          grouped[cat].push(book);
+        });
+
+        setBooksByCategory(grouped); // ✅ Fix 2
+
+        // ✅ Extract and store unique category names
+        const categories = Object.keys(grouped);  // ✅ Fix 3
+        setUniqueCategories(categories);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getBooks();
+}, []);
+
 
  const handleChooseFile = () => {
     document.getElementById('hiddenPdfInput').click();
@@ -158,35 +194,40 @@ console.log(metadataData)
 
         <h2 className="main-title">The Grand Library</h2>
 
-        <section className="mb-4">
-          <h5 className="section-title">✨ Fantasy Books</h5>
-          <div className="book-row d-flex gap-3">
-            {books.map((src, idx) => (
-              <Card key={idx} className="book-card border-0 shadow-sm">
-                <Card.Img src={src} className="rounded" />
-              </Card>
-            ))}
-          </div>
-        </section>
+     {Object.entries(booksByCategory).map(([category, books]) => (
+  <section className="mb-4" key={category}>
+    <h5 className="section-title">📚 {category}</h5>
+    <div className="book-row d-flex gap-3 flex-wrap">
+      {books.map((book, idx) => (
+        <Card key={idx} className="book-card border-0 shadow-sm">
+          <Card.Img
+            src={book.coverImage || defaultCover}
+            className="rounded"
+            onClick={() => handleOpenBook(book.fileName, book._id)}
+            style={{ cursor: 'pointer' }}
+          />
+          <Card.Body className="p-2">
+            <Card.Title className="fs-6">{book.title}</Card.Title>
+          </Card.Body>
+        </Card>
+      ))}
+    </div>
+  </section>
+))}
 
-        <section className="mb-4">
-          <h5 className="section-title">📜 Ancient Books</h5>
-          <div className="book-row d-flex gap-3">
-            {ancientBooks.map((src, idx) => (
-              <Card key={idx} className="book-card border-0 shadow-sm">
-                <Card.Img src={src} className="rounded" />
-              </Card>
-            ))}
-          </div>
-        </section>
+
+       
 
         <section>
-          <h5 className="section-title">🌍 Explore Other Categories</h5>
-          <div className="d-flex gap-3">
-            {categories.map((src, idx) => (
-              <img key={idx} src={src} alt="Category" className="category-icon rounded-circle" />
-            ))}
-          </div>
+         <h5 className="section-title">🌍 Categories</h5>
+<div className="d-flex gap-3 flex-wrap">
+  {uniqueCategories.map((cat, idx) => (
+    <div key={idx} className="category-pill px-3 py-1 rounded bg-light border">
+      {cat}
+    </div>
+  ))}
+</div>
+
         </section>
       </Container>
       </div>

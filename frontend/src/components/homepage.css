@@ -79,7 +79,11 @@
 
 .right-sidebar {
   width: 280px;
-  background-color: #f9fcfe;
+
+margin:auto;
+  background-color: #f9f9f9; /* Optional: change bg for visual separation */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+  position: relative; /* Ensure stacking correctly */
 }
 
 .bar-graph .bar {
@@ -90,4 +94,21 @@
 .homepage-container {
   background: #f5fafd;
   min-height: 100vh;
+}
+.category-pill {
+  background: linear-gradient(to right, #f3f4f6, #e2e8f0); /* soft gray gradient */
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: background 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.category-pill:hover {
+  background: linear-gradient(to right, #dbeafe, #bfdbfe); /* soft blue on hover */
+  transform: scale(1.05);
 }
