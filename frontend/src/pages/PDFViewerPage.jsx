@@ -16,7 +16,10 @@ import PDFProgressBar  from '../components/PDFViewer/PDFProgressBar';
 import ColorSwatchBar  from '../components/ColorSwatchBar';
 import PenButton       from '../components/PDFViewer/PenButton';
 import { PiHighlighterLight } from "react-icons/pi";
+import { FiBox } from "react-icons/fi";
 import './PDFViewerPage.css';
+import { FiSearch, FiBookOpen } from 'react-icons/fi';
+
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
@@ -52,6 +55,27 @@ const { data: drawingList, add: addStroke, remove: delStroke } = useDrawings(boo
   const wrapperRef = useRef(null);
   const [penMode, setPenMode] = useState(false);
   const [highlightMode, setHighlightMode] = useState(false);
+  const [vocabMode,setVocabMode]=useState(false)
+const [vocabList, setVocabList] = useState([]); // { word, meaning }
+const [selectedWord, setSelectedWord] = useState(null);
+const [meaning, setMeaning] = useState('');
+const [loadingMeaning, setLoadingMeaning] = useState(false);
+const fetchDefinition = async (word) => {
+  setLoadingMeaning(true);
+  setMeaning('');
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    const data = await res.json();
+    const definition = data[0]?.meanings?.[0]?.definitions?.[0]?.definition;
+    setMeaning(definition || 'No definition found.');
+  } catch (err) {
+    setMeaning('Error fetching meaning.');
+  } finally {
+    setLoadingMeaning(false);
+  }
+};
+
+
   const strokesRef = useRef({});                     // { [page]: Stroke[] }
 const [penColor, setPenColor] = useState('#ff0000');
 
@@ -78,9 +102,26 @@ const [penColor, setPenColor] = useState('#ff0000');
     if (c) confirmColour('Amber Gold', c);
   };
 
-  const containerProps = (!highlightMode || penMode || eraserMode)
-    ? {}
-    : { onMouseUp: onTextMouseUp };
+  const containerProps =
+  (highlightMode || vocabMode) && !penMode && !eraserMode
+    ? {
+        onMouseUp: (e) => {
+          const sel = window.getSelection();
+          const text = sel?.toString().trim();
+          if (text) {
+            const rect = sel.getRangeAt(0).getBoundingClientRect();
+            const x = rect.left + window.scrollX;
+            const y = rect.bottom + window.scrollY;
+            if (vocabMode) {
+              setSelectedWord({ word: text, x, y });
+            } else {
+              onTextMouseUp(e);
+            }
+          }
+        }
+      }
+    : {};
+
 useEffect(() => {
   if (!drawingList) return;
   const map = {};
@@ -90,6 +131,10 @@ useEffect(() => {
   }
   strokesRef.current = map;
 }, [drawingList]);
+
+useEffect(() => {
+  console.log('📘 Vocab List:', vocabList);
+}, [vocabList]);
 
 
   return (
@@ -135,6 +180,23 @@ useEffect(() => {
             });
           }}
         />
+       <FiBox
+  size={30}
+  title="Vocab mode"
+  className={`pdf-btn icon ${vocabMode ? 'active' : ''}`}
+  onClick={() => {
+    setVocabMode(prev => {
+      const next = !prev;
+      if (next) {
+        setPenMode(false);
+        setEraserMode(false);
+        setHighlightMode(false);
+      }
+      return next;
+    });
+  }}
+/>
+
       </PDFHeader>
 
       {showViewPopup && (
@@ -152,6 +214,7 @@ useEffect(() => {
           ${penMode      ? 'pen-mode'      : ''}
           ${highlightMode? 'highlight-mode': ''}
           ${eraserMode   ? 'eraser-mode'   : ''}
+             ${vocabMode ? 'vocab-mode' : ''}
         `}
         {...containerProps}
       >
@@ -239,6 +302,109 @@ useEffect(() => {
             <ColorSwatchBar onSelect={confirmColour} onComment={addWithComment}/>
           </div>
         )}
+{selectedWord && vocabMode && (
+  <div style={{
+    position: 'absolute',
+    left: selectedWord.x,
+    top: selectedWord.y,
+    zIndex: 1000,
+    background: '#fff',
+    border: '1px solid #ddd',
+    borderRadius: '12px',
+    padding: '16px',
+    boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+    minWidth: '280px',
+    fontFamily: 'sans-serif',
+    animation: 'fadeIn 0.2s ease-out'
+  }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ fontSize: '18px', fontWeight: 600, color: '#333' }}>
+        {selectedWord.word}
+      </div>
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <button
+          title="Search on Google"
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+          onClick={() => {
+            const query = encodeURIComponent(selectedWord.word);
+            window.open(`https://www.google.com/search?q=${query}`, '_blank');
+          }}
+        >
+          <FiSearch size={20} color="#555" />
+        </button>
+        <button
+          title="Define"
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+          onClick={() => fetchDefinition(selectedWord.word)}
+        >
+          <FiBookOpen size={20} color="#555" />
+        </button>
+      </div>
+    </div>
+
+    <input
+      type="text"
+      placeholder="Type your own meaning..."
+      style={{
+        marginTop: '12px',
+        width: '100%',
+        padding: '8px 10px',
+        borderRadius: '8px',
+        border: '1px solid #ccc',
+        fontSize: '14px'
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          const userMeaning = e.target.value.trim();
+          if (userMeaning) {
+            setVocabList(v => [...v, { word: selectedWord.word, meaning: userMeaning }]);
+            setSelectedWord(null);
+          }
+        }
+      }}
+    />
+
+    {loadingMeaning && (
+      <div style={{ marginTop: '10px', fontSize: '14px', color: '#888' }}>
+        Fetching meaning...
+      </div>
+    )}
+
+    {meaning && (
+      <div style={{
+        marginTop: '10px',
+        padding: '10px',
+        background: '#f9f9f9',
+        borderRadius: '8px',
+        fontSize: '14px',
+        color: '#333'
+      }}>
+        <strong>Meaning:</strong> {meaning}
+      </div>
+    )}
+
+    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+      <button
+        style={{
+          background: '#f5f5f5',
+          border: '1px solid #ccc',
+          borderRadius: '6px',
+          padding: '6px 12px',
+          fontSize: '13px',
+          cursor: 'pointer'
+        }}
+        onClick={() => {
+          setSelectedWord(null);
+          setMeaning('');
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+
+
 
         {navMode==='flip' && numPages>0 && (
           <PDFProgressBar

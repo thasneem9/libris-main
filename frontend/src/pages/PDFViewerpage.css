@@ -300,7 +300,7 @@ input[type="range"].pdf-progress::-moz-range-thumb {
   user-select: text; /* only allow text selection when highlightMode = true */
 }
 .pdf-viewer-container { user-select: none; }
-.pdf-viewer-container.highlight-mode { user-select: text; }
+.pdf-viewer-container.highlight-mode,.pdf-viewer-container.vocab-mode { user-select: text; }
 /* always on top of pages & annotations */
 .drawing-layer {
   position: absolute;
@@ -310,3 +310,18 @@ input[type="range"].pdf-progress::-moz-range-thumb {
 }
 
 /* penmode end */
+
+
+.pdf-viewer-container.vocab-mode * {
+  user-select: text !important;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
