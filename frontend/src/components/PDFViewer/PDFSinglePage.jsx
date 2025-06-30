@@ -4,7 +4,7 @@ import React, {useRef, useEffect, useCallback } from 'react';
 export default function PDFSinglePage({
   pageNumber, scale, pageRef, savePageRect, pageBox,annotations,
   penMode, penColor, strokesRef, onComment,onDelete,eraserMode,   
-    onAddStroke, onDeleteStroke ,bookId                                           // ➜ UPDATE
+    onAddStroke, onDeleteStroke ,bookId,onCommentIconClick                                     // ➜ UPDATE
 }) {
 
    // ➜ ADD ---------------------------------------------------------------
@@ -185,6 +185,7 @@ if (idx > -1) {
             onComment={onComment}
             onDelete={onDelete}
             eraserMode={eraserMode}
+              onCommentIconClick={onCommentIconClick}
           />
         )}
 

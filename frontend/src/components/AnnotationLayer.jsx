@@ -3,7 +3,7 @@ import { getRgba } from '../utils/colors';
 
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-export default function AnnotationLayer({ pageBox, annotations, onComment, onDelete, eraserMode }) {
+export default function AnnotationLayer({ pageBox, annotations, onComment, onDelete, eraserMode,onCommentIconClick }) {
   if (!pageBox) return null;
   const { width, height } = pageBox;
 
@@ -58,12 +58,25 @@ return annotations.map((a) => {
             top : -15,
             cursor: 'pointer',
           }}
-          onClick={() => onComment(a)}
+    onClick={() =>
+  onCommentIconClick({
+    text: a.text,
+    comment: a.comment,
+    x: pos.left,
+    y: pos.top,
+  })
+}
+
+
         >
           <LiaComment size={18} color="#FBBF24" />
         </div>
-      )}
+      )}  
+
+
     </div>
+
+    
   );
 });
 

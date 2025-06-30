@@ -21,6 +21,8 @@ import './PDFViewerPage.css';
 import { FiSearch, FiBookOpen } from 'react-icons/fi';
 import { BsBookmarksFill } from "react-icons/bs";
 import HighlightsSidebar from '../components/PDFViewer/HighlightsSidebar';
+import { FaRegStickyNote } from "react-icons/fa";
+import AnnotationsSidebar from '../components/PDFViewer/AnnotationSidebar';
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
@@ -58,12 +60,15 @@ const { data: drawingList, add: addStroke, remove: delStroke } = useDrawings(boo
   const [penMode, setPenMode] = useState(false);
   const [highlightMode, setHighlightMode] = useState(false);
 const [viewHighlights,setViewHighlights]=useState(false)
+const [viewAnnotations,setViewAnnotations]=useState(false)
 
   const [vocabMode,setVocabMode]=useState(false)
 const [vocabList, setVocabList] = useState([]); // { word, meaning }
 const [selectedWord, setSelectedWord] = useState(null);
 const [meaning, setMeaning] = useState('');
 const [loadingMeaning, setLoadingMeaning] = useState(false);
+const [activeComment, setActiveComment] = useState(null); //to view comment added
+
 const fetchDefinition = async (word) => {
   setLoadingMeaning(true);
   setMeaning('');
@@ -218,6 +223,24 @@ size={30}
     });
   }}
 />
+<FaRegStickyNote 
+size={30}
+ title="view annotations"
+  className={`pdf-btn icon ${viewAnnotations ? 'active' : ''}`}
+  onClick={() => {
+    setViewAnnotations(prev => {
+      const next = !prev;
+      if (next) {
+        setPenMode(false);
+        setEraserMode(false);
+        setHighlightMode(false);
+        setVocabMode(false)
+        setViewHighlights(false)
+      }
+      return next;
+    });
+  }}
+/>
 
       </PDFHeader>
 
@@ -271,6 +294,7 @@ size={30}
                           eraserMode={eraserMode}
                           onComment={updAnn}
                           onDelete={delAnn}
+                            onCommentIconClick={setActiveComment}
 
 
                                 penMode={penMode}          /* ➜ ADD */
@@ -301,6 +325,7 @@ size={30}
                       onComment={updAnn}
                       onDelete={delAnn}
 
+                        onCommentIconClick={setActiveComment}
                        penMode={penMode}
                         penColor={penColor}
                         strokesRef={strokesRef}
@@ -316,10 +341,51 @@ size={30}
             }
           </div>
         </Document>
+        {activeComment && (
+  <div
+    style={{
+      position: 'absolute',
+      left: activeComment.x + 30,
+      top: activeComment.y,
+      zIndex: 1000,
+      background: '#fff',
+      border: '1px solid #ddd',
+      borderRadius: '10px',
+      padding: '12px 16px',
+      maxWidth: '250px',
+      boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+      animation: 'fadeIn 0.2s ease-out'
+    }}
+  >
+    <div style={{ fontWeight: 'bold', marginBottom: 6 }}>Note</div>
+    <div style={{ fontSize: 14, color: '#333' }}>
+      {activeComment.comment || 'No comment'}
+    </div>
+    <div style={{ textAlign: 'right', marginTop: 8 }}>
+      <button
+        onClick={() => setActiveComment(null)}
+        style={{
+          background: '#f5f5f5',
+          border: '1px solid #ccc',
+          borderRadius: 6,
+          padding: '4px 10px',
+          cursor: 'pointer',
+          fontSize: 13,
+        }}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
         {viewHighlights && (
   <HighlightsSidebar
     annotations={annList}
   />
+)}
+{viewAnnotations && (
+  <AnnotationsSidebar annotations={annList} />
 )}
 
 
