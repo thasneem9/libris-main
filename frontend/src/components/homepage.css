@@ -21,20 +21,20 @@ body{
 
 .right-sidebar {
   width: 280px;
-  background: #fdfdfd;
-  border-left: 1px solid #eee;
+    background: var(--bg-sidebar);
+  border-left: 1px solid var(--border-light);
 }
 
 .plus-card {
   width: 120px;
   height: 180px;
   border-radius: 6px;
-  background-color: var(--bg-card-hover);
+  background-color: var(--bg-card);
   transform: scale(1.05);
 }
 
 .plus-card:hover {
-  background-color: var(--background-card-hover);
+  background-color: var(--bg-card-hover);
   transform: scale(1.05);
 }
 
@@ -213,4 +213,12 @@ li {
   padding-left: 20px;
   padding-right: 20px;
   text-align: center;
+}
+.book-card {
+  background-color: var(--bg-card);
+  color: var(--text-color);
+}
+
+.book-card:hover {
+  background-color: var(--bg-card-hover);
 }

@@ -11,6 +11,7 @@ import { PiBooksLight } from "react-icons/pi";
 import { BiCategoryAlt } from "react-icons/bi";
 import defaultCover from '../images/defaultCover.png'
 import {themes} from '../utils/theme'
+import CustomSidebar from './Sidebar'
 import {
   FaCog,
   FaUser,
@@ -321,7 +322,7 @@ return(
 
   <div className="homepage-layout">
     {/* Sidebar */}
-   <div className="sidebar p-3 d-flex flex-column justify-content-between">
+ {/*   <div className="sidebar p-3 d-flex flex-column justify-content-between">
   <div>
     <h4 className="logo mb-4">📚 Libris</h4>
         <Nav className="flex-column gap-2">
@@ -334,13 +335,9 @@ return(
       </Dropdown.Toggle>
       <Dropdown.Menu>
         <Dropdown.Item onClick={() => applyTheme('frosty')}>❄️ Frosty</Dropdown.Item>
-{/*         <Dropdown.Item onClick={() => applyTheme('galaxy')}>🌌 Galaxy</Dropdown.Item>
- */}        <Dropdown.Item onClick={() => applyTheme('coffee')}>☕ Coffee</Dropdown.Item>
+      <Dropdown.Item onClick={() => applyTheme('coffee')}>☕ Coffee</Dropdown.Item>
       </Dropdown.Menu>
-    </Dropdown>
-
-
-        
+    </Dropdown>        
         </Nav>
       </div>
 
@@ -358,7 +355,10 @@ return(
       Logout
     </Button>
   </div>
-</div>
+</div> */}
+
+<CustomSidebar setShowModal={setShowModal} applyTheme={applyTheme}></CustomSidebar>
+
 
     {/* Main + Right section grouped tightly */}
     <div className="main-right-wrapper d-flex">

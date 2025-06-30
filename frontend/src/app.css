@@ -1,40 +1,15 @@
 :root {
-/*   --plank-primary:#c9a150;
-  --plank-secondary:#652f03; */  
-/*   
-
- /* Frosty blue */
-  --plank-primary: #d0e8f2;   
- --plank-secondary: #a9c2cb;  
-
-/* vintage wood */
-/* --plank-primary: #b88b4a;   
---plank-secondary: #4a2e14;  */
-
-/* galcofe house axy */
-/* --plank-primary: #a97453;   
---plank-secondary: #4b2e1d;  */
-
-/* olive home */
-/* --plank-primary: #8a9a5b;  
---plank-secondary: #3e4a2b;  */
-
---background-color-frost: #eef7fb;  /* Pale icy blue */
---background-color-forest: #f5f1e7;  /* Soft parchment white */
---background-color-wood: #fefaf3;  /* Creamy linen */
---background-color-space: #100b1f;  /* Deep space blue */
---background-color-coffee: #fcf5ee;  /* Light cream / foam */
---background-color-olive: #f2f6ec;  /* Faded leafy green */
-
-
-
-
-
-
+  --bg-main: #0d0d0d;
+  --bg-sidebar: #1a1a1a;
+  --bg-card: #2a2a2a;
+  --bg-card-hover: #3a3a3a;
+  --text-color: #ffffff;
+  --accent-color: #ffa500;
+  --border-light: #444;
+  --background-color-olive: #0d0d0d;
 }
 
-:root {
-
+body.light-mode {
   --bg-main: #f5fafd;
   --bg-sidebar: #ffffff;
   --bg-card: #f0f4ff;
@@ -42,47 +17,35 @@
   --text-color: #333333;
   --accent-color: #3b82f6;
   --border-light: #eee;
-
+  --background-color-olive: #f2f6ec;
 }
 
-body{
-
-        margin: 0; /* Removes default spacing */
-background-color: var(--background-color-olive);
-
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-color);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   height: 100%;
-
- font-family: 'Inter', sans-serif;
-  color: var(--text-color);
-
- 
 }
 
-
-/* PDF Viewer Premium Style */
+/* PDF Viewer Theme */
 body.pdf-viewer-bg {
-
   background: radial-gradient(circle at top left, #eef2ff, #e0e7ff);
-
-
   background-size: cover;
   background-attachment: fixed;
   transition: background 0.4s ease;
 }
+
+/* Theme Chooser Theme */
 body.theme-chooser-bg {
-
-
+  background-color: var(--bg-main);
   background-size: cover;
   background-attachment: fixed;
   transition: background 0.4s ease;
-
-
-   margin: 0;
-      background-color: #000;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: var(--text-color);
 }
