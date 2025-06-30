@@ -19,6 +19,8 @@ import { PiHighlighterLight } from "react-icons/pi";
 import { FiBox } from "react-icons/fi";
 import './PDFViewerPage.css';
 import { FiSearch, FiBookOpen } from 'react-icons/fi';
+import { BsBookmarksFill } from "react-icons/bs";
+import HighlightsSidebar from '../components/PDFViewer/HighlightsSidebar';
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
@@ -55,6 +57,8 @@ const { data: drawingList, add: addStroke, remove: delStroke } = useDrawings(boo
   const wrapperRef = useRef(null);
   const [penMode, setPenMode] = useState(false);
   const [highlightMode, setHighlightMode] = useState(false);
+const [viewHighlights,setViewHighlights]=useState(false)
+
   const [vocabMode,setVocabMode]=useState(false)
 const [vocabList, setVocabList] = useState([]); // { word, meaning }
 const [selectedWord, setSelectedWord] = useState(null);
@@ -191,6 +195,24 @@ useEffect(() => {
         setPenMode(false);
         setEraserMode(false);
         setHighlightMode(false);
+        setViewHighlights(false)
+      }
+      return next;
+    });
+  }}
+/>
+<BsBookmarksFill 
+size={30}
+ title="view Highlights"
+  className={`pdf-btn icon ${viewHighlights ? 'active' : ''}`}
+  onClick={() => {
+    setViewHighlights(prev => {
+      const next = !prev;
+      if (next) {
+        setPenMode(false);
+        setEraserMode(false);
+        setHighlightMode(false);
+        setVocabMode(false)
       }
       return next;
     });
@@ -294,6 +316,12 @@ useEffect(() => {
             }
           </div>
         </Document>
+        {viewHighlights && (
+  <HighlightsSidebar
+    annotations={annList}
+  />
+)}
+
 
         {picker && (
           <div style={{
