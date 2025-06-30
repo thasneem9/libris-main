@@ -10,6 +10,7 @@ import BookPreviewModal from './BookPreviewModal';
 import { PiBooksLight } from "react-icons/pi";
 import { BiCategoryAlt } from "react-icons/bi";
 import defaultCover from '../images/defaultCover.png'
+import {themes} from '../utils/theme'
 import {
   FaCog,
   FaUser,
@@ -294,7 +295,26 @@ const [checkedDays, setCheckedDays] = useState(() => {
   }, []);
 
 
+const applyTheme = (themeName) => {
+  const theme = themes[themeName];
+  if (!theme) return;
 
+  Object.keys(theme).forEach((key) => {
+    document.documentElement.style.setProperty(key, theme[key]);
+  });
+};
+
+
+const handleThemeChange = (themeName) => {
+  applyTheme(themeName);
+  localStorage.setItem('theme', themeName);
+};
+
+
+useEffect(() => {
+    const saved = localStorage.getItem('theme') || 'frosty';
+    applyTheme(saved);
+  }, []);
 return(
     <>
   <Topbar />
@@ -308,16 +328,17 @@ return(
           <Button variant="primary" className="rounded-pill shadow-sm" onClick={() => setShowModal(true)}>
             Add Book ❄️
           </Button>
-         <Dropdown>
-  <Dropdown.Toggle variant="outline-primary" className="rounded-pill longer">
-    <TbColorFilter size={20} className="me-2" />Themes
-  </Dropdown.Toggle>
-  <Dropdown.Menu>
-    <Dropdown.Item>❄️ Frosty</Dropdown.Item>
-    <Dropdown.Item>🌌 Galaxy</Dropdown.Item>
-    <Dropdown.Item>☕ Coffee</Dropdown.Item>
-  </Dropdown.Menu>
-</Dropdown>
+ <Dropdown>
+      <Dropdown.Toggle variant="outline-primary" className="rounded-pill longer">
+        <TbColorFilter size={20} className="me-2" /> Themes
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={() => applyTheme('frosty')}>❄️ Frosty</Dropdown.Item>
+{/*         <Dropdown.Item onClick={() => applyTheme('galaxy')}>🌌 Galaxy</Dropdown.Item>
+ */}        <Dropdown.Item onClick={() => applyTheme('coffee')}>☕ Coffee</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+
 
         
         </Nav>
@@ -368,7 +389,8 @@ return(
 ))}
 
 {/* Plus card at the end */}
-<Card
+
+{/* <Card
   onClick={() => setShowModal(true)}
   className="book-card add-book-card d-flex flex-column align-items-center justify-content-center"
 
@@ -376,7 +398,7 @@ return(
   <IoAddCircleOutline size={50} className="add-icon mb-2" />
   <div className="add-text">Add Book</div>
 </Card>
-
+ */}
 
             </div>
           </section>

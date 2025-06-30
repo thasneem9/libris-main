@@ -1,10 +1,13 @@
 .homepage-layout {
   display: flex;
   min-height: 100vh;
-  background: #f5fafd;
+ background: var(--bg-main);
+
   
 }
-
+body{
+   color: var(--text-color);
+}
 .main-right-wrapper {
   display: flex;
   gap: 100px; /* 👈 control spacing between main and right sidebar */
@@ -26,12 +29,12 @@
   width: 120px;
   height: 180px;
   border-radius: 6px;
-  background-color: #f0f4ff;
-  transition: background-color 0.3s ease;
+  background-color: var(--bg-card-hover);
+  transform: scale(1.05);
 }
 
 .plus-card:hover {
-  background-color: #d6ecff;
+  background-color: var(--background-card-hover);
   transform: scale(1.05);
 }
 
@@ -50,13 +53,12 @@
 
 .sidebar {
   width: 220px;
-  background: #ffffff;
-  border-right: 1px solid #eee;
-   
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-light);
 }
 
 .sidebar .nav-link {
-  color: #333;
+  color: var(--text-color);
   padding: 8px 0;
 }
 
@@ -192,7 +194,7 @@ li {
 }
 
 .add-icon {
-  color: #3b82f6;
+  color: var(--accent-color);
   transition: transform 0.3s ease;
 }
 
@@ -203,7 +205,7 @@ li {
 .add-text {
   font-weight: 500;
   font-size: 14px;
-  color: #3b82f6;
+  color: var(--accent-color);
 }
 
 .longer {

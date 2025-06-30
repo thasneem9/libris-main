@@ -33,6 +33,17 @@
 
 }
 
+:root {
+
+  --bg-main: #f5fafd;
+  --bg-sidebar: #ffffff;
+  --bg-card: #f0f4ff;
+  --bg-card-hover: #d6ecff;
+  --text-color: #333333;
+  --accent-color: #3b82f6;
+  --border-light: #eee;
+
+}
 
 body{
 
@@ -43,6 +54,9 @@ background-color: var(--background-color-olive);
   background-size: cover;
   background-position: center;
   height: 100%;
+
+ font-family: 'Inter', sans-serif;
+  color: var(--text-color);
 
  
 }
