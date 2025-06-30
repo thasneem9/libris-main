@@ -22,7 +22,7 @@ import {
 import { TbColorFilter } from "react-icons/tb";
 
 import { Dropdown } from 'react-bootstrap';
-
+import StreakTracker  from './StreakTracker';
 
 const Homepage = () => {
     const navigate=useNavigate();
@@ -203,6 +203,58 @@ console.log(metadataData)
       setFormOpen(true); // show popup/modal to get metadata
     }
   };
+ 
+
+function getTodayIndex() {
+  const day = new Date().getDay();
+  return day === 0 ? 6 : day - 1;
+}
+
+const [checkedDays, setCheckedDays] = useState(() => {
+    const saved = localStorage.getItem('checkedDays');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === 7) return parsed;
+      } catch {}
+    }
+    return [false, false, false, false, false, false, false];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('checkedDays', JSON.stringify(checkedDays));
+  }, [checkedDays]);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const minutesSpent = (now - startTime) / 60000;
+      console.log("⏳ Minutes spent:", minutesSpent.toFixed(2));
+
+      if (minutesSpent >= 0.1) {
+        const todayIdx = getTodayIndex();
+        console.log("✅ Reached threshold! Attempting to mark day:", todayIdx);
+
+        setCheckedDays((prev) => {
+          if (prev[todayIdx]) {
+            console.log("🟡 Already marked today.");
+            clearInterval(interval);
+            return prev;
+          }
+          const updated = [...prev];
+          updated[todayIdx] = true;
+          console.log("🟢 Updated checkedDays:", updated);
+          clearInterval(interval);
+          return updated;
+        });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+
 return(
     <>
   <Topbar />
@@ -313,16 +365,9 @@ return(
  */}    </Card>
 
         <Card className="p-3 shadow-sm">
-          <Card.Title><FaClock /> Time Spent Reading</Card.Title>
-          <div className="bar-graph d-flex gap-2 align-items-end mt-3 mb-2">
-            {[80, 160, 120, 320, 240].map((h, i) => (
-              <div key={i} className="bar" style={{ height: `${h / 2}px` }}></div>
-            ))}
-          </div>
-          <div className="text-muted small">
-            <p>Total Words: <b>1524</b></p>
-            <p>Average Mastery: <b>84%</b></p>
-          </div>
+       
+             <StreakTracker checkedDays={checkedDays} />
+
         </Card>
       </div>
     </div>

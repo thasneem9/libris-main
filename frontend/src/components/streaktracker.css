@@ -1,0 +1,29 @@
+.streak-tracker-container {
+  width: 100%;
+}
+
+.fire-icon {
+  font-size: 32px;
+}
+
+.day-circle-sm {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e9ecef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  transition: background 0.3s ease;
+}
+
+.day-circle-sm.checked {
+  background: linear-gradient(135deg, #ff6a00, #ff9a00);
+}
+
+.day-label-sm {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 2px;
+}
