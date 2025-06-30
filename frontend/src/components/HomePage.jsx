@@ -9,6 +9,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 import BookPreviewModal from './BookPreviewModal';
 import { PiBooksLight } from "react-icons/pi";
 import { BiCategoryAlt } from "react-icons/bi";
+import defaultCover from '../images/defaultCover.png'
 import {
   FaCog,
   FaUser,
@@ -203,6 +204,45 @@ console.log(metadataData)
       setFormOpen(true); // show popup/modal to get metadata
     }
   };
+
+  
+    const handleDeleteBook = async (book) => {
+    if (!window.confirm(`Are you sure you want to delete "${book.title}"?`)) return;
+  
+    try {
+      const res = await fetch('/api/books/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          fileName: book.fileName, // S3 key
+          bookId: book._id,        // MongoDB id
+        }),
+      });
+  
+      const data = await res.json();
+      if (res.ok) {
+        alert('Book deleted successfully');
+        // Refresh UI
+        setBooksByCategory(prev => {
+          const updated = { ...prev };
+          const cat = book?.category;
+          updated[cat] = updated[cat]?.filter(b => b._id !== book._id);
+          return updated;
+        });
+        setAllBooks(prev => prev.filter(b => b._id !== book._id));
+        setShowModal(false);
+      } else {
+        alert(data.error || "Delete failed");
+      }
+    } catch (error) {
+      console.error('Failed to delete book', error);
+      alert("Something went wrong while deleting the book.");
+    }
+  };
+  
  /* ----------------------------------- */
 
 function getTodayIndex() {
@@ -312,7 +352,7 @@ return(
             {books.map((book, idx) => (
   <Card key={idx} className="book-card border-0 shadow-sm">
    <Card.Img
-  src={book.coverImage || defaultCover}
+  src={book?.coverImage || defaultCover}
   className="rounded"
   onClick={() => {
     setSelectedBook(book);
@@ -390,6 +430,7 @@ return(
   onHide={() => setPreviewOpen(false)}
   book={selectedBook}
   handleOpenBook={() => handleOpenBook(selectedBook.fileName, selectedBook._id)}
+  handleDeleteBook={handleDeleteBook}
 />
 
 </>

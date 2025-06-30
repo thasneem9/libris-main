@@ -6,7 +6,7 @@ router.get('/getBookData',getBooks)
 router.get('/categories',getCategories)
 router.post('/addBook',addBook);
 router.post('/upload',uploadToAws);
-router.delete('/delete',removeBook);
+router.post('/delete',removeBook);
 router.post('/upload-cover',uploadCover)
 
 export default router

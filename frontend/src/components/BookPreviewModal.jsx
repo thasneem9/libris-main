@@ -4,10 +4,12 @@ import { FaBookOpen, FaEdit, FaTrash, FaHeart } from 'react-icons/fa';
 import { FaStickyNote, FaQuoteRight, FaBookReader } from 'react-icons/fa';
 
 import './bookpreviewmodal.css'
-const BookPreviewModal = ({ show, onHide, book,handleOpenBook }) => {
+const BookPreviewModal = ({ show, onHide, book,handleOpenBook,handleDeleteBook }) => {
   if (!book) return null;
 
   const { title, author, coverImage } = book;
+
+
 
   return (
   <Modal show={show} onHide={onHide} size="lg" centered className="frosty-modal">
@@ -46,7 +48,8 @@ const BookPreviewModal = ({ show, onHide, book,handleOpenBook }) => {
         <div className="d-flex flex-wrap gap-3 mt-3 book-buttons">
           <Button variant="primary" onClick={handleOpenBook}><FaBookOpen className="me-2" /> Read</Button>
           <Button variant="warning"><FaEdit className="me-2" /> Edit</Button>
-          <Button variant="danger"><FaTrash className="me-2" /> Delete</Button>
+      <Button variant="danger" onClick={() => handleDeleteBook(book)}><FaTrash className="me-2" /> Delete</Button>
+
           <Button variant="outline-danger"><FaHeart className="me-2" /> Favorite</Button>
         </div>
       </div>
