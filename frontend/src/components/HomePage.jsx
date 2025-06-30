@@ -36,8 +36,33 @@ const [uniqueCategories, setUniqueCategories] = useState([]);
   const [formOpen, setFormOpen] = useState(false);
 const [selectedBook, setSelectedBook] = useState(null);
 const [previewOpen, setPreviewOpen] = useState(false);
+  const [quote, setQuote] = useState(null);
+ const fallbackQuote = `"The best way to get started is to quit talking and begin doing." — Walt Disney`;
 
+  useEffect(() => {
+    fetch("https://type.fit/api/quotes")
+      .then((res) => res.json())
+      .then((data) => {
+        const random = data[Math.floor(Math.random() * data.length)];
+        setQuote(`"${random.text}" — ${random.author || "Unknown"}`);
+      })
+      .catch((err) => {
+        console.error("Quote fetch failed:", err);
+        setQuote(fallbackQuote);
+      });
+  }, []);
 
+useEffect(() => {
+    fetch("https://api.quotable.io/random")
+      .then((res) => res.json())
+      .then((data) => {
+        setQuote(`"${data.content}" — ${data.author}`);
+      })
+      .catch((err) => {
+     /*    console.error("Failed to fetch quote:", err); */
+        setQuote("“Inspiration failed to load.”");
+      });
+  }, []);
   const [metadata, setMetadata] = useState({
 
     title: '',
@@ -279,13 +304,13 @@ return(
 
       {/* Right Sidebar */}
       <div className="right-sidebar p-3">
-        <Card className="mb-4 p-3 shadow-sm">
-          <Card.Title>📖 Arcane Lore</Card.Title>
-          <Card.Text className="fst-italic text-muted small">
-            “True knowledge lies not in the pages, but in the echoes they stir within your soul.”
-          </Card.Text>
-          <a href="#" className="small">More Insights →</a>
-        </Card>
+       <Card className="mb-4 p-3 shadow-sm">
+      <Card.Title>Daily Quote 📖</Card.Title>
+      <Card.Text className="fst-italic text-muted small">
+        {quote || "Loading..."}
+      </Card.Text>
+{/*       <a href="#" className="small">More Insights →</a>
+ */}    </Card>
 
         <Card className="p-3 shadow-sm">
           <Card.Title><FaClock /> Time Spent Reading</Card.Title>
