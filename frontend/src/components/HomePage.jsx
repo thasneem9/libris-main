@@ -203,7 +203,7 @@ console.log(metadataData)
       setFormOpen(true); // show popup/modal to get metadata
     }
   };
- 
+ /* ----------------------------------- */
 
 function getTodayIndex() {
   const day = new Date().getDay();
