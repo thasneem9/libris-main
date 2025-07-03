@@ -1,0 +1,73 @@
+
+
+.signup-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  max-width: 400px;
+  margin: 4rem auto;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.signup-card:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.signup-card h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.signup-card input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.signup-card input:focus {
+  outline: none;
+  border-color: #4f46e5; /* indigo-600 */
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.signup-card button[type='submit'] {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.signup-card button[type='submit']:hover {
+  background-color: #4338ca;
+}
+
+.signup-card p {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 1rem;
+}
+
+.signup-card .underline {
+  color: #4f46e5;
+  cursor: pointer;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-size: inherit;
+  padding: 0;
+}

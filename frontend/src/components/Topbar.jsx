@@ -51,6 +51,8 @@ const Topbar = () => {
           width="35"
           height="35"
         />
+        <button title="testing local-first architecture">click</button>
+
       </div>
     </div>
   );
