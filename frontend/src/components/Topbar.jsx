@@ -7,7 +7,7 @@ import { FaMoon } from 'react-icons/fa';
 import { GoSun } from 'react-icons/go';
 
 const Topbar = () => {
-   const [isLightMode, setIsLightMode] = useState(false); // default = night
+   const [isLightMode, setIsLightMode] = useState(true); // default = night
 
   useEffect(() => {
     if (isLightMode) {
