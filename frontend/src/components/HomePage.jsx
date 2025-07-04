@@ -17,7 +17,7 @@ import {
   FaUser,
   FaRss,
   FaQuoteRight,
-  FaGamepad,
+  
   FaBookmark,
   FaSignOutAlt
 } from 'react-icons/fa';
@@ -322,40 +322,6 @@ return(
 
   <div className="homepage-layout">
     {/* Sidebar */}
- {/*   <div className="sidebar p-3 d-flex flex-column justify-content-between">
-  <div>
-    <h4 className="logo mb-4">📚 Libris</h4>
-        <Nav className="flex-column gap-2">
-          <Button variant="primary" className="rounded-pill shadow-sm" onClick={() => setShowModal(true)}>
-            Add Book ❄️
-          </Button>
- <Dropdown>
-      <Dropdown.Toggle variant="outline-primary" className="rounded-pill longer">
-        <TbColorFilter size={20} className="me-2" /> Themes
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => applyTheme('frosty')}>❄️ Frosty</Dropdown.Item>
-      <Dropdown.Item onClick={() => applyTheme('coffee')}>☕ Coffee</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>        
-        </Nav>
-      </div>
-
-   <div className="sidebar-links-wrapper">
-    <ul className="sidebar-links">
-      <li><FaCog className="me-2" /> Settings</li>
-      <li><FaUser className="me-2" /> User Account</li>
-      <li><FaRss className="me-2" /> Feed</li>
-      <li><FaQuoteRight className="me-2" /> Quotes</li>
-      <li><FaGamepad className="me-2" /> Game</li>
-      <li><FaBookmark className="me-2" /> Highlights/Bookmarks</li>
-    </ul>
-    <Button variant="outline-secondary" size="sm" className="mt-2">
-      <FaSignOutAlt className="me-2" />
-      Logout
-    </Button>
-  </div>
-</div> */}
 
 <CustomSidebar setShowModal={setShowModal} applyTheme={applyTheme}></CustomSidebar>
 
@@ -370,7 +336,7 @@ return(
           <section className="mb-4" key={category}>
             <h5 className="section-title"> <PiBooksLight size={30}/> {category}</h5>
             <div className="book-row ">
-            {books.map((book, idx) => (
+            {books?.map((book, idx) => (
   <Card key={idx} className="book-card border-0 shadow-sm">
    <Card.Img
   src={book?.coverImage || defaultCover}
@@ -388,17 +354,7 @@ return(
   </Card>
 ))}
 
-{/* Plus card at the end */}
 
-{/* <Card
-  onClick={() => setShowModal(true)}
-  className="book-card add-book-card d-flex flex-column align-items-center justify-content-center"
-
->
-  <IoAddCircleOutline size={50} className="add-icon mb-2" />
-  <div className="add-text">Add Book</div>
-</Card>
- */}
 
             </div>
           </section>

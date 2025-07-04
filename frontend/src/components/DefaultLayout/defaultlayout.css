@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* 🧹 Prevent horizontal scrolling */
+}
+
+.feed-layout {
+  display: flex;
+  width: 100%;
+  max-width: 100vw;   /* Prevent flex from growing beyond */
+  overflow-x: hidden; /* Prevent scrollbars */
+}
+
+
+/* .feed-main {
+  flex: 1;
+  min-height: 100vh;
+  background: var(--bg-main);
+  padding: 1rem;
+
+} */
+
+
+.children-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
