@@ -21,8 +21,10 @@ export default function CustomSidebar({ setShowModal, applyTheme }) {
 
   const handleFeedClick=async()=>{
     navigate('/feed')
-  
+  }
 
+  const handleUserAccountClick=async()=>{
+    navigate('/user')
   }
   return (
     <Sidebar backgroundColor="#f5fafd" className="d-flex flex-column justify-content-between p-3" style={{ height: '100vh' }}>
@@ -50,7 +52,7 @@ export default function CustomSidebar({ setShowModal, applyTheme }) {
        
        
           <MenuItem icon={<FaUser />}  onClick={() => setShowModal(true)}>Add Book</MenuItem>
-          <MenuItem icon={<FaUser />}>User Account</MenuItem>
+          <MenuItem icon={<FaUser />} onClick={handleUserAccountClick}>User Account</MenuItem>
           <MenuItem icon={<FaRss />} onClick={handleFeedClick}>Feed</MenuItem>
           <MenuItem icon={<FaQuoteRight />}>Quotes</MenuItem>
           <MenuItem icon={<FaBookmark />}>Highlights / Bookmarks</MenuItem>

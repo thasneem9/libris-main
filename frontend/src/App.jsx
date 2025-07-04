@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthPage from './pages/AuthPage.jsx';
 import { userAtom } from './atoms/userAtom.js';
 import FeedPage from './components/Feed/FeedPage.jsx';
+import UserAccount from './components/UserAccount/UserAccount.jsx';
 // wrote to avoid the super-persistent error: container must be absolute forp df-highlighter
 const AppWrapper = ({ children }) => (
   <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
@@ -34,6 +35,7 @@ function App() {
             <Route path="/fiction" element={<Home />} />
             <Route path="/pdf-viewer" element={<PDFViewerPage />} />
             <Route path="/feed" element={<FeedPage />} />
+            <Route path="/user" element={<UserAccount />} />
           </Routes>
         </AppWrapper>
       </Router>

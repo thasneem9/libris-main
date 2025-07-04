@@ -1,0 +1,152 @@
+/* Container Setup */
+.user-account-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9fb;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  margin-right: 30px;
+  padding-top: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #333;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.sidebar li:hover,
+.sidebar .active {
+  background-color: #e6e8f0;
+  font-weight: 600;
+}
+
+/* Main Profile Section */
+.profile-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Profile Card */
+.profile-card {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #222;
+}
+
+.profile-info .role {
+  margin: 4px 0;
+  color: #6c757d;
+}
+
+.profile-info .location {
+  color: #a1a1a1;
+  font-size: 14px;
+}
+
+.edit-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f0f0f0;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #555;
+  transition: background 0.2s;
+}
+
+.edit-button:hover {
+  background: #e0e0e0;
+}/* Secondary edit button (inside info card header) */
+.edit-button-secondary {
+  background: #f0f0f0;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #555;
+  transition: background 0.2s;
+}
+
+.edit-button-secondary:hover {
+  background: #e0e0e0;
+}
+
+
+/* Info Card */
+.info-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.info-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.info-grid label {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.info-grid p {
+  font-size: 15px;
+  color: #222;
+  margin: 0;
+}
