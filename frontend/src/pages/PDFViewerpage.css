@@ -142,44 +142,53 @@ input[type="range"].pdf-progress::-moz-range-thumb {
 
 /* BAR--- */
 
-
-/* PDF Header Modern Styling */
-.pdf-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
+/* headerrrr */
+.pdf-header.dark-version {
+  background-color: #121212;
+  color: #fff;
   padding: 12px 20px;
-  background: #4DA8DA;
   border-radius: 12px;
   margin-bottom: 16px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
 }
-
-
 
 .pdf-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-/* Modern Buttons */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.brand-name {
+  font-family: sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.tool-icons, .page-controls, .nav-icons, .action-icons, .notes-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .pdf-btn {
-  background: white;
+  background: transparent;
   border: none;
-  color: #1e293b;
+  color: #fff;
   font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-}
-
-.pdf-btn:hover {
-  background: #f1f5f9;
 }
 
 .pdf-btn.icon {
@@ -189,11 +198,36 @@ input[type="range"].pdf-progress::-moz-range-thumb {
   justify-content: center;
 }
 
-.pdf-btn.active {
-  background: #fef2f2;
-  color: #b91c1c;
+.pdf-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
+.pdf-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #facc15;
+}
+
+.pdf-btn.ghost {
+  border: 1px solid #fff;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  background: transparent;
+  color: #fff;
+}
+
+.pdf-btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.page-number, .pdf-zoom {
+  font-size: 20px;
+  color: #fff;
+}
+
+
+/* ---- */
 
 /* Zoom Display */
 .pdf-zoom {

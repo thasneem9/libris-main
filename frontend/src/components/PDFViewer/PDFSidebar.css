@@ -1,0 +1,51 @@
+.pdf-sidebar {
+  width: 160px;
+  overflow-y: auto;
+  border-right: 1px solid #e0e0e0;
+  padding: 12px 8px;
+  position: fixed;
+  top: 60px; /* adjust for header */
+  bottom: 0;
+  left: 0;
+  background: #ffffff;
+  z-index: 10;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.thumbnail-wrapper {
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fafafa;
+  border: 1px solid transparent;
+}.thumbnail-wrapper {
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 2px solid #02020294; /* ✅ Visible light border */
+  padding: 4px; /* ✅ Adds spacing between canvas and border */
+  box-sizing: border-box;
+}
+.thumbnail-wrapper:hover {
+  border-color: #999;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.thumbnail-wrapper.active {
+  border-color: #007bff; /* Blue highlight */
+  background: #e6f0ff;
+}
+
+.thumb-label {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+  color: #555;
+}

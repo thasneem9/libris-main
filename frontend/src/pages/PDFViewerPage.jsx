@@ -2,11 +2,12 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { pdfjs, Document } from 'react-pdf';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-
+import {PiPencilSimpleLineDuotone} from 'react-icons/pi'
 import useZoom            from '../hooks/useZoom';
 import useAnnotations     from '../hooks/useAnnotations';
 import useDrawings from '../hooks/useDrawings';
 import useSelectionPicker from '../hooks/useSelectionPicker';
+import PDFSidebar from '../components/PDFViewer/PDFSidebar'
 
 import PDFHeader       from '../components/PDFViewer/PDFHeader';
 import ViewModePopup   from '../components/PDFViewer/ViewModePopup';
@@ -155,102 +156,43 @@ useEffect(() => {
 
 
   return (
-    <section style={{ padding: 8 }}>
-      <PDFHeader
-        scale={scale} zoomIn={zoomIn} zoomOut={zoomOut}
-        eraserMode={eraserMode}
-        setEraserMode={() => {
-          setEraserMode(e => {
-            const next = !e;
-            if (next) {
-              setPenMode(false);
-              setHighlightMode(false);
-            }
-            return next;
-          });
-        }}
-        onViewClick={() => setShowViewPopup(v => !v)}
-        onNavClick ={() => setShowNavPopup (v => !v)}
-      >
-    {/* ➜ UPDATE – keep colour in state */}
-        <PenButton
-          value={penColor}
-          onChange={(hex) => {
-            setPenColor(hex);
-            setPenMode(true);
-            setHighlightMode(false);
-            setEraserMode(false);
-          }}
-        />
-        <PiHighlighterLight 
-        size={30}
-          className={`pdf-btn icon ${highlightMode ? 'active' : ''}`}
-          title="Highlight text"
-          onClick={() => {
-            setHighlightMode(h => {
-              const next = !h;
-              if (next) {
-                setPenMode(false);
-                setEraserMode(false);
-              }
-              return next;
-            });
-          }}
-        />
-       <FiBox
-  size={30}
-  title="Vocab mode"
-  className={`pdf-btn icon ${vocabMode ? 'active' : ''}`}
-  onClick={() => {
-    setVocabMode(prev => {
-      const next = !prev;
-      if (next) {
-        setPenMode(false);
-        setEraserMode(false);
-        setHighlightMode(false);
-        setViewHighlights(false)
-      }
-      return next;
-    });
-  }}
-/>
-<BsBookmarksFill 
-size={30}
- title="view Highlights"
-  className={`pdf-btn icon ${viewHighlights ? 'active' : ''}`}
-  onClick={() => {
-    setViewHighlights(prev => {
-      const next = !prev;
-      if (next) {
-        setPenMode(false);
-        setEraserMode(false);
-        setHighlightMode(false);
-        setVocabMode(false)
-      }
-      return next;
-    });
-  }}
-/>
-<FaRegStickyNote 
-size={30}
- title="view annotations"
-  className={`pdf-btn icon ${viewAnnotations ? 'active' : ''}`}
-  onClick={() => {
-    setViewAnnotations(prev => {
-      const next = !prev;
-      if (next) {
-        setPenMode(false);
-        setEraserMode(false);
-        setHighlightMode(false);
-        setVocabMode(false)
-        setViewHighlights(false)
-      }
-      return next;
-    });
-  }}
+    <>
+      <div className="flex h-full">
+      {/* ← LEFT: Thumbnails Sidebar */}
+      <PDFSidebar
+        file={bookUrl}
+        numPages={numPages}
+        currentPage={startPage - 1}
+        onPageSelect={(newPageIdx) => setCurrentPageIdx(newPageIdx)}
+      />
+
+       <section style={{ padding: 8 }}>
+      
+<PDFHeader
+  startPage={startPage} endPage={endPage} numPages={numPages}
+  scale={scale}
+  zoomIn={zoomIn}
+  zoomOut={zoomOut}
+  eraserMode={eraserMode}
+  setEraserMode={setEraserMode}
+  penMode={penMode}
+  setPenMode={setPenMode}
+  highlightMode={highlightMode}
+  setHighlightMode={setHighlightMode}
+  viewAnnotations={viewAnnotations}
+  setViewAnnotations={setViewAnnotations}
+  viewHighlights={viewHighlights}
+  setViewHighlights={setViewHighlights}
+  vocabMode={vocabMode}
+  setVocabMode={setVocabMode}
+  onViewClick={() => setShowViewPopup(v => !v)}
+  onNavClick={() => setShowNavPopup(v => !v)}
+  
 />
 
-      </PDFHeader>
+
+
+
 
       {showViewPopup && (
         <ViewModePopup viewMode={viewMode} setViewMode={setViewMode}
@@ -533,5 +475,7 @@ size={30}
         )}
       </div>
     </section>
+   </div>
+    </>
   );
 }
