@@ -58,14 +58,14 @@ return annotations.map((a) => {
             top : -15,
             cursor: 'pointer',
           }}
-    onClick={() =>
+  onClick={() =>
   onCommentIconClick({
-    text: a.text,
-    comment: a.comment,
+    ...a,           // includes _id, text, comment, page, color, etc.
     x: pos.left,
     y: pos.top,
   })
 }
+
 
 
         >

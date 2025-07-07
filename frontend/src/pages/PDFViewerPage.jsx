@@ -110,6 +110,14 @@ const [penColor, setPenColor] = useState('#ff0000');
     const c=prompt('Enter comment');
     if (c) confirmColour('Amber Gold', c);
   };
+const editComment = () => {
+  const newComment = prompt('Edit comment', activeComment.comment);
+  if (newComment !== null && newComment !== activeComment.comment) {
+    const updated = { ...activeComment, comment: newComment };
+    setActiveComment(updated);
+    updAnn(activeComment._id, { comment: newComment });
+  }
+};
 
   const containerProps =
   (highlightMode || vocabMode) && !penMode && !eraserMode
@@ -375,6 +383,20 @@ size={30}
       >
         Close
       </button>
+     <button
+  onClick={editComment}
+  style={{
+    background: '#f5f5f5',
+    border: '1px solid #ccc',
+    borderRadius: 6,
+    padding: '4px 10px',
+    cursor: 'pointer',
+    fontSize: 13,
+  }}
+>
+  Edit
+</button>
+
     </div>
   </div>
 )}

@@ -56,9 +56,9 @@ export default function CustomSidebar({ setShowModal, applyTheme }) {
        
           <MenuItem icon={<FaUser />}  onClick={() => setShowModal(true)}>Add Book</MenuItem>
           <MenuItem icon={<FaUser />} onClick={handleUserAccountClick}>User Account</MenuItem>
-          <MenuItem icon={<FaRss />} onClick={handleFeedClick}>Feed</MenuItem>
-          <MenuItem icon={<FaQuoteRight />} onClick={handleQuotesClick} >Quotes</MenuItem>
-          <MenuItem icon={<FaBookmark />}>Highlights / Bookmarks</MenuItem>
+          <MenuItem icon={<FaRss />} onClick={handleFeedClick}>Social Feed</MenuItem>
+          <MenuItem icon={<FaQuoteRight />} onClick={handleQuotesClick} >Highlights/Quotes</MenuItem>
+
         </Menu>
 
         <Button variant="outline-secondary" size="sm" className="mt-3 w-100">
