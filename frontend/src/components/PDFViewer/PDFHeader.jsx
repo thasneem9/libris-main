@@ -8,7 +8,9 @@ import { BsBookmarksFill } from 'react-icons/bs';
 import { FaRegStickyNote } from 'react-icons/fa';
 import { MdOutlineNotes } from 'react-icons/md';
 import { PiScrollLight } from 'react-icons/pi';
-
+import { LuPanelLeft } from "react-icons/lu";
+import { LineChart, LineChartIcon, LineSquiggle } from 'lucide-react';
+import PenButton from './PenButton';
 export default function PDFHeader(props) {
   const {
     scale, zoomIn, zoomOut,
@@ -19,7 +21,10 @@ export default function PDFHeader(props) {
     viewAnnotations, setViewAnnotations,
     viewHighlights, setViewHighlights,
     vocabMode, setVocabMode,
-        startPage, endPage, numPages, // ✅ Add these
+        startPage, endPage, numPages,
+         showSidebar,
+  setShowSidebar,
+   
     children
   } = props;
 
@@ -31,6 +36,7 @@ export default function PDFHeader(props) {
           <PiBookOpenTextLight size={28} />
           <span className="brand-name">Libris</span>
         </div>
+       
 
         <div className="tool-icons">
           <PiHighlighterLight
@@ -49,7 +55,7 @@ export default function PDFHeader(props) {
             }}
           />
 
-          <FiPenTool
+          <LineSquiggle
             size={37}
             title="Draw"
             className={`pdf-btn icon ${penMode ? 'active' : ''}`}
@@ -63,6 +69,7 @@ export default function PDFHeader(props) {
                 return next;
               });
             }}
+           
           />
 
           <TbEraser
@@ -88,8 +95,16 @@ export default function PDFHeader(props) {
         <div className="nav-icons">
           <PiScrollLight size={37} className="pdf-btn icon" title="View Mode" onClick={onViewClick} />
           <LuGalleryHorizontal size={37} className="pdf-btn icon" title="Navigation Mode" onClick={onNavClick} />
-        
+         <button
+  onClick={() => setShowSidebar(prev => !prev)}
+  className="sidebar-toggle-btn"
+  title="Toggle Sidebar"
+>
+  <LuPanelLeft  size={26} />
+</button>
         </div>
+
+        
 
 
       <div className="notes-buttons">

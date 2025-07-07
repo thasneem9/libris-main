@@ -24,6 +24,8 @@ import { BsBookmarksFill } from "react-icons/bs";
 import HighlightsSidebar from '../components/PDFViewer/HighlightsSidebar';
 import { FaRegStickyNote } from "react-icons/fa";
 import AnnotationsSidebar from '../components/PDFViewer/AnnotationSidebar';
+import { PanelLeft } from 'lucide-react';
+
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
@@ -69,6 +71,9 @@ const [selectedWord, setSelectedWord] = useState(null);
 const [meaning, setMeaning] = useState('');
 const [loadingMeaning, setLoadingMeaning] = useState(false);
 const [activeComment, setActiveComment] = useState(null); //to view comment added
+
+const [showSidebar, setShowSidebar] = useState(true);
+
 
 const fetchDefinition = async (word) => {
   setLoadingMeaning(true);
@@ -159,12 +164,15 @@ useEffect(() => {
     <>
       <div className="flex h-full">
       {/* ← LEFT: Thumbnails Sidebar */}
-      <PDFSidebar
-        file={bookUrl}
-        numPages={numPages}
-        currentPage={startPage - 1}
-        onPageSelect={(newPageIdx) => setCurrentPageIdx(newPageIdx)}
-      />
+     {showSidebar && (
+  <PDFSidebar
+    file={bookUrl}
+    numPages={numPages}
+    currentPage={startPage - 1}
+    onPageSelect={(newPageIdx) => setCurrentPageIdx(newPageIdx)}
+  />
+)}
+
 
        <section style={{ padding: 8 }}>
       
@@ -187,6 +195,10 @@ useEffect(() => {
   setVocabMode={setVocabMode}
   onViewClick={() => setShowViewPopup(v => !v)}
   onNavClick={() => setShowNavPopup(v => !v)}
+
+   showSidebar={showSidebar}
+  setShowSidebar={setShowSidebar}
+  onPenColorChange={setPenColor} 
   
 />
 
