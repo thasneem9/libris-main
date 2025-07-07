@@ -10,6 +10,7 @@
   ];
 
   function ColorPopover({ onSelect, close }) {
+    
     return (
       <div
         role="menu"

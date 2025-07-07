@@ -11,7 +11,76 @@ import { PiScrollLight } from 'react-icons/pi';
 import { LuPanelLeft } from "react-icons/lu";
 import { LineChart, LineChartIcon, LineSquiggle } from 'lucide-react';
 import PenButton from './PenButton';
+import { useState, useRef, useCallback } from 'react';
+import { LuPenLine } from 'react-icons/lu';
+import tinycolor from 'tinycolor2';
+const swatches = [
+  { name: 'Red',   hex: '#ff0000' },
+  { name: 'Black', hex: '#000000' },
+  { name: 'Blue',  hex: '#0066ff' }
+];
+
+function ColorPopover({ onSelect, close }) {
+  return (
+    <div
+      role="menu"
+      style={{
+        position: 'absolute',
+        top: 40,
+        left: 0,
+        background: '#fff',
+        border: '1px solid #cbd5e1',
+        borderRadius: 8,
+        padding: 8,
+        display: 'flex',
+        gap: 6,
+        zIndex: 9999,
+        boxShadow: '0 4px 12px rgba(0,0,0,.1)'
+      }}
+    >
+      {swatches.map(({ name, hex }) => (
+        <button
+          key={name}
+          aria-label={name}
+          onClick={() => { onSelect(hex); close(); }}
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: '50%',
+            border: '1px solid #e2e8f0',
+            background: hex,
+            cursor: 'pointer'
+          }}
+        />
+      ))}
+
+      {/* Custom color picker */}
+      <input
+        type="color"
+        aria-label="Custom colour"
+        style={{ width: 18, height: 18, border: 'none', padding: 0 }}
+        onChange={e => {
+          onSelect(tinycolor(e.target.value).toHexString());
+          close();
+        }}
+      />
+    </div>
+  );
+}
+
 export default function PDFHeader(props) {
+  const [showPenPicker, setShowPenPicker] = useState(false);
+const pickerRef = useRef(null);
+
+const handlePenColorSelect = (hex) => {
+  onPenColorChange(hex);  // updates parent
+  setPenMode(true);
+  setHighlightMode(false);
+  setEraserMode(false);
+  setShowPenPicker(false);
+};
+
+  
   const {
     scale, zoomIn, zoomOut,
     eraserMode, setEraserMode,
@@ -24,7 +93,8 @@ export default function PDFHeader(props) {
         startPage, endPage, numPages,
          showSidebar,
   setShowSidebar,
-   
+     penColor,         // ⬅️ add this
+  onPenColorChange, // ⬅️ add this
     children
   } = props;
 
@@ -55,22 +125,28 @@ export default function PDFHeader(props) {
             }}
           />
 
-          <LineSquiggle
-            size={37}
-            title="Draw"
-            className={`pdf-btn icon ${penMode ? 'active' : ''}`}
-            onClick={() => {
-              setPenMode(p => {
-                const next = !p;
-                if (next) {
-                  setHighlightMode(false);
-                  setEraserMode(false);
-                }
-                return next;
-              });
-            }}
-           
-          />
+         <div style={{ position: 'relative' }} ref={pickerRef}>
+  <LineSquiggle
+    size={37}
+    title="Draw"
+    className={`pdf-btn icon ${penMode ? 'active' : ''}`}
+    onClick={() => {
+      setPenMode(true);
+      setHighlightMode(false);
+      setEraserMode(false);
+      setShowPenPicker(prev => !prev);  // toggle picker
+    }}
+    style={{ color: penColor }}
+  />
+
+  {showPenPicker && (
+    <ColorPopover
+      onSelect={handlePenColorSelect}
+      close={() => setShowPenPicker(false)}
+    />
+  )}
+</div>
+
 
           <TbEraser
             size={37}

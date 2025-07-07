@@ -200,8 +200,22 @@ useEffect(() => {
   setShowSidebar={setShowSidebar}
   onPenColorChange={setPenColor} 
   
-/>
+>
+ {/* ➜ UPDATE – keep colour in state */}
+        <PenButton
+          value={penColor}
+          onChange={(hex) => {
+            setPenColor(hex);
+            setPenMode(true);
+            setHighlightMode(false);
+            setEraserMode(false);
+          }}
+        />
 
+
+</PDFHeader>
+
+  
 
 
 
