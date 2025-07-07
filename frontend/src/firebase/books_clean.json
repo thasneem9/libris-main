@@ -1,0 +1,44 @@
+{
+  "68664be8ec332ba72e8d92e1": {
+    "title": "Harry Potter",
+    "userId": "users/6837dbd20a4cf1792085e993",
+    "category": "Fiction",
+    "fileName": "https://libris-pdfs.s3.ap-south-1.amazonaws.com/finalB.pdf",
+    "author": "",
+    "coverImage": "https://res.cloudinary.com/dewupuonf/image/upload/v1751534566/book_cover.jpg",
+    "createdAt": "2025-07-03T09:22:48.269Z",
+    "updatedAt": "2025-07-03T09:22:48.269Z"
+  },
+  "68665375ec332ba72e8d9335": {
+    "title": "Percy",
+    "userId": "users/6837dbd20a4cf1792085e993",
+    "category": "Fiction",
+    "fileName": "https://libris-pdfs.s3.ap-south-1.amazonaws.com/Untitled%20document.pdf",
+    "author": "",
+    "coverImage": "https://res.cloudinary.com/dewupuonf/image/upload/v1751536500/book_cover.jpg",
+    "createdAt": "2025-07-03T09:55:01.488Z",
+    "updatedAt": "2025-07-03T09:55:01.488Z"
+  },
+   "68665f5cec332ba72e8d9349": {
+      "title": "Dorian Gray",
+      "userId": "users/6837dbd20a4cf1792085e993",
+      "category": "Fiction",
+      "fileName": "https://libris-pdfs.s3.ap-south-1.amazonaws.com/annotation.pdf",
+      "author": "",
+      "coverImage": "https://res.cloudinary.com/dewupuonf/image/upload/v1751539547/book_cover.jpg",
+      "createdAt": "2025-07-03T10:45:48.893Z",
+      "updatedAt": "2025-07-03T10:45:48.893Z"
+    },
+    "6866d9c5ec332ba72e8d9373": {
+      "title": "Assasins Creed",
+      "userId": "users/6837dbd20a4cf1792085e993",
+      "category": "Fiction",
+      "fileName": "https://libris-pdfs.s3.ap-south-1.amazonaws.com/46dcded0-2bc2-4e63-b7e.pdf",
+      "author": "",
+      "coverImage": "https://res.cloudinary.com/dewupuonf/image/upload/v1751570884/book_cover.jpg",
+      "createdAt": "2025-07-03T19:28:05.244Z",
+      "updatedAt": "2025-07-03T19:28:05.244Z"
+    }
+
+ 
+}
