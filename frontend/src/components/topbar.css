@@ -30,8 +30,8 @@
 }
 
 .premium-btn {
-  background-color: #c6e6f7;
-  color: #004466;
+  background-color: #004466; 
+  color: #c6e6f7;
   border: none;
   border-radius: 12px;
   font-weight: 500;
@@ -39,7 +39,7 @@
 }
 
 .premium-btn:hover {
-  background-color: #b2dff2;
+  background-color: rgb(203, 212, 216); 
 }
 
 .bell-icon {
