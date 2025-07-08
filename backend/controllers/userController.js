@@ -41,6 +41,7 @@ const signupUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      completedDates:[],
       createdAt: new Date()
     });
 
@@ -99,6 +100,7 @@ const loginUser = async (req, res) => {
       message: 'Login successful',
       username: user.username,
       name: user.name,
+      userId:userId
     });
   } catch (error) {
     console.error(error);

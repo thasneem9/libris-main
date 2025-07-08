@@ -28,7 +28,7 @@ const handleSubmit = async (e) => {
 
 
 
-    setUser({ username: form.username }); 
+    setUser({ username: form.username,name:data.name,userId:data.userId }); 
 
    toast.success("Login successful!");
     navigate("/")

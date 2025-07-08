@@ -248,55 +248,6 @@ console.log(metadataData)
   
  /* ----------------------------------- */
 
-function getTodayIndex() {
-  const day = new Date().getDay();
-  return day === 0 ? 6 : day - 1;
-}
-
-const [checkedDays, setCheckedDays] = useState(() => {
-    const saved = localStorage.getItem('checkedDays');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === 7) return parsed;
-      } catch {}
-    }
-    return [false, false, false, false, false, false, false];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('checkedDays', JSON.stringify(checkedDays));
-  }, [checkedDays]);
-
-  useEffect(() => {
-    const startTime = Date.now();
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const minutesSpent = (now - startTime) / 60000;
-      console.log("⏳ Minutes spent:", minutesSpent.toFixed(2));
-
-      if (minutesSpent >= 0.1) {
-        const todayIdx = getTodayIndex();
-        console.log("✅ Reached threshold! Attempting to mark day:", todayIdx);
-
-        setCheckedDays((prev) => {
-          if (prev[todayIdx]) {
-            console.log("🟡 Already marked today.");
-            clearInterval(interval);
-            return prev;
-          }
-          const updated = [...prev];
-          updated[todayIdx] = true;
-          console.log("🟢 Updated checkedDays:", updated);
-          clearInterval(interval);
-          return updated;
-        });
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-
 const applyTheme = (themeName) => {
   const theme = themes[themeName];
   if (!theme) return;
@@ -385,7 +336,7 @@ return(
 
         <Card className="p-3 shadow-sm">
        
-             <StreakTracker checkedDays={checkedDays} />
+             <StreakTracker />
 
         </Card>
       </div>
