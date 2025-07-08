@@ -9,7 +9,10 @@ import { S3UrlContext } from '../contexts/s3urlContext'
 import { useContext, useEffect,useState } from 'react'
 import db from '../firebase/firebase'
 import { onSnapshot } from 'firebase/firestore';
+import { userAtom } from '../atoms/userAtom.js';
+import { useRecoilValue } from 'recoil';
 const Book = () => {
+  const user=useRecoilValue(userAtom)
   const navigate = useNavigate();
 
   const [selectedPdfUrl, setSelectedPdfUrl] = useState(null);

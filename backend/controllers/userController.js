@@ -1,76 +1,103 @@
-import User from '../models/User.js'
-import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
+import {db} from '../firebase/firebaseAdmin.js'; // Your firebase-admin initialized db
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-import jwt from 'jsonwebtoken';
+dotenv.config();
 
-dotenv.config()
-
+// Token creation helpers
 const createAccessToken = (userId) =>
   jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '40m' });
 
 const createRefreshToken = (userId) =>
   jwt.sign({ id: userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' });
 
-const signupUser=async(req,res)=>{
-    try {
-        const {name,username,email,password}=req.body;
+// SIGN UP USER
+const signupUser = async (req, res) => {
+  try {
+    const { name, username, email, password } = req.body;
 
-       
-            let existingUser= await User.findOne({ $or: [{email},{username}]});
-            if(existingUser){
-                console.log('userf found',existingUser);
-                return res.status(409).json({message:"USER ALREADY EXISTS"});
+    // Check for existing user by email or username
+    const userQuery = await db
+      .collection('users')
+      .where('email', '==', email)
+      .get();
 
-            }
-            const saltRounds=10;
-            const hashedPassword=await bcrypt.hash(password,saltRounds);
-            
-            const newUser=new User({email,username,password:hashedPassword,name});
-            await newUser.save();
-            console.log("Created new user",newUser)
+    const usernameQuery = await db
+      .collection('users')
+      .where('username', '==', username)
+      .get();
 
-            return res.status(200).json({message:"USER CREATED SUCCES",newUser})
-        
-    } catch (error) {
-        console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    if (!userQuery.empty || !usernameQuery.empty) {
+      return res.status(409).json({ message: 'USER ALREADY EXISTS' });
     }
 
-}
-const loginUser=async(req,res)=>{
-    try {
-        const {username,password}=req.body;
-    
-        const user=await User.findOne({username})
-        if(!user){
-            return res.status(404).json({message:"User does not exist"})
-        }
-        const isMatch=await bcrypt.compare(password,user.password);
-        if(!isMatch){
-            return res.status(401).json({message:"Invalid Credentials"});
-        }
-        
-    const accessToken = createAccessToken(user._id);
-    const refreshToken = createRefreshToken(user._id);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-   res.cookie('refreshToken', refreshToken, {
-  httpOnly: true,
-  secure: true, 
-  sameSite: 'Strict',
-  maxAge: 7 * 24 * 60 * 60 * 1000 // 7 daysss
-});
+    // Create new user document
+    const newUserRef = await db.collection('users').add({
+      name,
+      username,
+      email,
+      password: hashedPassword,
+      createdAt: new Date()
+    });
 
-    res.json({ accessToken });
-        res.status(200).json({message:"Login Successful"});
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({error:"Internal Server Error"})
-        
+    const newUserSnapshot = await newUserRef.get();
+    const newUser = { id: newUserSnapshot.id, ...newUserSnapshot.data() };
+
+    return res.status(200).json({ message: 'USER CREATED SUCCESSFULLY', newUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// LOGIN USER
+const loginUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Find user by username
+    const userQuery = await db
+      .collection('users')
+      .where('username', '==', username)
+      .limit(1)
+      .get();
+
+    if (userQuery.empty) {
+      return res.status(404).json({ message: 'User does not exist' });
     }
-}
-export const refreshAccessToken=(req, res) => {
+
+    const userDoc = userQuery.docs[0];
+    const user = userDoc.data();
+    const userId = userDoc.id;
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const accessToken = createAccessToken(userId);
+    const refreshToken = createRefreshToken(userId);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({ accessToken,userId });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// REFRESH ACCESS TOKEN
+const refreshAccessToken = (req, res) => {
   const token = req.cookies.refreshToken;
   if (!token) return res.status(401).json({ error: 'No refresh token' });
 
@@ -80,9 +107,10 @@ export const refreshAccessToken=(req, res) => {
     const newAccessToken = createAccessToken(decoded.id);
     res.json({ accessToken: newAccessToken });
   });
-}
+};
 
- const logout = (req, res) => {
+// LOGOUT USER
+const logout = (req, res) => {
   res.clearCookie('refreshToken', {
     httpOnly: true,
     secure: true,
@@ -91,4 +119,4 @@ export const refreshAccessToken=(req, res) => {
   res.json({ message: 'Logged out' });
 };
 
-export {signupUser,loginUser,logout}
+export { signupUser, loginUser, refreshAccessToken, logout };
