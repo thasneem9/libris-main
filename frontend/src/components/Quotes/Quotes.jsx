@@ -15,8 +15,8 @@ const Quotes = () => {
         Popular inspirational quotes collected from various sources
       </p>
       <div className="quote-buttons">
-        <button className="btn selected">FAV QUOTES</button>
-        <button className="btn">All QUOTES</button>
+        <button className="quotes-btn selected">FAV QUOTES</button>
+        <button className="quotes-btn">All QUOTES</button>
       </div>
       <div className="quotes-grid">
         {[1, 2, 3].map((_, idx) => (
