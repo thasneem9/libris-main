@@ -12,19 +12,7 @@ import { BiCategoryAlt } from "react-icons/bi";
 import defaultCover from '../images/defaultCover.png'
 
 import CustomSidebar from './Sidebar'
-import {
-  FaCog,
-  FaUser,
-  FaRss,
-  FaQuoteRight,
-  
-  FaBookmark,
-  FaSignOutAlt
-} from 'react-icons/fa';
-
-import { TbColorFilter } from "react-icons/tb";
-
-import { Dropdown } from 'react-bootstrap';
+import { getDailyQuote } from '../utils/DailyQoute';
 import StreakTracker  from './StreakTracker';
 
 const Homepage = () => {
@@ -39,33 +27,17 @@ const [uniqueCategories, setUniqueCategories] = useState([]);
   const [formOpen, setFormOpen] = useState(false);
 const [selectedBook, setSelectedBook] = useState(null);
 const [previewOpen, setPreviewOpen] = useState(false);
-  const [quote, setQuote] = useState(null);
+const [quote, setQuote] = useState("Loading...");
+
  const fallbackQuote = `"The best way to get started is to quit talking and begin doing." — Walt Disney`;
 
-  useEffect(() => {
-    fetch("https://type.fit/api/quotes")
-      .then((res) => res.json())
-      .then((data) => {
-        const random = data[Math.floor(Math.random() * data.length)];
-        setQuote(`"${random.text}" — ${random.author || "Unknown"}`);
-      })
-      .catch((err) => {
-        console.error("Quote fetch failed:", err);
-        setQuote(fallbackQuote);
-      });
-  }, []);
 
 useEffect(() => {
-    fetch("https://api.quotable.io/random")
-      .then((res) => res.json())
-      .then((data) => {
-        setQuote(`"${data.content}" — ${data.author}`);
-      })
-      .catch((err) => {
-     /*    console.error("Failed to fetch quote:", err); */
-        setQuote("“Inspiration failed to load.”");
-      });
+    getDailyQuote().then(setQuote);
   }, []);
+
+
+
   const [metadata, setMetadata] = useState({
 
     title: '',
