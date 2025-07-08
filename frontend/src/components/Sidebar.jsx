@@ -1,8 +1,7 @@
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-
-import { Button, Dropdown } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import {
   FaCog,
   FaUser,
@@ -13,12 +12,16 @@ import {
   FaSignOutAlt,
 } from 'react-icons/fa';
 import { TbColorFilter } from 'react-icons/tb';
-
+import { useSetRecoilState } from 'recoil';
+import { userAtom } from '../atoms/userAtom';
+import api from '../utils/axiosInstance';
+import { toast } from 'react-toastify';
 
 export default function CustomSidebar({ setShowModal, applyTheme }) {
   const navigate=useNavigate()
 
-
+const setUser = useSetRecoilState(userAtom);
+  const [showLogoutModal, setLogoutShowModal] = useState(false);
   const handleFeedClick=async()=>{
     navigate('/feed')
   }
@@ -29,7 +32,22 @@ export default function CustomSidebar({ setShowModal, applyTheme }) {
   const handleQuotesClick=async()=>{
     navigate('/quotes')
   }
+  const handleConfirmLogout = async () => {
+    try {
+      await api.post('/users/logout', {}, { withCredentials: true });
+      setUser(null);
+      localStorage.removeItem('libris-user');
+      toast.success('Logged out!');
+      navigate('/auth');
+    } catch (err) {
+      console.error('Logout error:', err);
+      toast.error('Logout failed.');
+    } finally {
+      setLogoutShowModal(false); // Close modal
+    }
+  };
   return (
+    <>
     <Sidebar backgroundColor="#f5fafd" className="d-flex flex-column justify-content-between p-3" style={{ height: '100vh' }}>
       {/* Logo & Top Buttons */}
       <div>
@@ -61,11 +79,30 @@ export default function CustomSidebar({ setShowModal, applyTheme }) {
 
         </Menu>
 
-        <Button variant="outline-secondary" size="sm" className="mt-3 w-100">
+        <Button variant="outline-secondary" size="sm" className="mt-3 w-100" onClick={() => setLogoutShowModal(true)}>
           <FaSignOutAlt className="me-2" />
           Logout
         </Button>
       </div>
     </Sidebar>
+
+    {/* Logout Confirmation Modal */}
+      <Modal show={showLogoutModal} onHide={() => setLogoutShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Logout</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to log out? We'll miss you!
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setLogoutShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleConfirmLogout}>
+            Yes, Log me out
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      </>
   );
 }

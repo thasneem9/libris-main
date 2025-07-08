@@ -12,6 +12,8 @@ import { userAtom } from './atoms/userAtom.js';
 import FeedPage from './components/Feed/FeedPage.jsx';
 import UserAccount from './components/UserAccount/UserAccount.jsx';
 import Quotes from './components/Quotes/Quotes.jsx';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // wrote to avoid the super-persistent error: container must be absolute forp df-highlighter
 const AppWrapper = ({ children }) => (
   <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
@@ -40,6 +42,7 @@ function App() {
             <Route path="/quotes" element={<  Quotes />} />
           </Routes>
         </AppWrapper>
+           <ToastContainer position="top-right" autoClose={3000} />
       </Router>
     
     </>

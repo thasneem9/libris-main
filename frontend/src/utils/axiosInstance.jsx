@@ -2,34 +2,30 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: '/api',
-  withCredentials: true, 
+  withCredentials: true,  // ✅ include cookies in requests
 });
 
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('accessToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// ✅ No need for request interceptor to attach token
+// Axios will send cookies automatically
 
+// Response interceptor (optional, if you still want auto-refresh)
 api.interceptors.response.use(
   res => res,
   async err => {
     const original = err.config;
+
+    // Handle token expiration using refresh token from cookie
     if (err.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {
-        const res = await api.post('/token/refresh'); 
-        const newToken = res.data.accessToken;
-        localStorage.setItem('accessToken', newToken);
-        original.headers.Authorization = `Bearer ${newToken}`;
-        return api(original); 
+        await api.post('/users/refresh'); // ✅ refresh accessToken cookie
+        return api(original); // retry original request
       } catch (refreshErr) {
         console.error('Refresh token failed:', refreshErr);
-
+        // Optionally: redirect to login
       }
     }
+
     return Promise.reject(err);
   }
 );

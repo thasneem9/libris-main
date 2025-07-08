@@ -61,7 +61,8 @@ const addBook=async(req,res)=>{
 const addBook=async(req, res)=> {
   try {
     const { title, author, category, fileName, coverImage } = req.body;
-    const userId = "6837dbd20a4cf1792085e993";
+/*     const userId = "6837dbd20a4cf1792085e993"; */
+const userId=req.userId
 
     const newBook = {
       title,
@@ -103,7 +104,7 @@ try {
 } */
 const getBooks=async(req,res)=>{
 try {
-         const userId = "6837dbd20a4cf1792085e993";
+         const userId = req.userId
         const snapshot = await db.collection("books").where("userId", "==", userId).get();
     const books = [];
     snapshot.forEach((doc) => {
@@ -205,7 +206,7 @@ const uploadCover = [
 
 const getCategories = async (req, res) => {
   try {
-    const userId = "6837dbd20a4cf1792085e993";
+    const userId = req.userId
     const books = await Book.find({ userId });
 
     const categoriesSet = new Set();
@@ -222,7 +223,7 @@ const getCategories = async (req, res) => {
 };
 export const getAllCategories=async(req,res)=>{
   try {
-      const userId = "6837dbd20a4cf1792085e993";
+      const userId = req.userId
       const snapshot = await db.collection("books").where("userId", "==", userId).get();
 
     const categoriesSet = new Set();

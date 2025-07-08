@@ -1,9 +1,6 @@
 
 import {signupUser,loginUser,refreshAccessToken,logout} from '../controllers/userController.js'
 import express from 'express'
-import { protectRoute } from "../middleware/protectRoute.js";
-
-
 const router=express.Router()
 
 router.post('/signup',signupUser)

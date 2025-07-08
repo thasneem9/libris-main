@@ -26,9 +26,9 @@ const handleSubmit = async (e) => {
       withCredentials: true, 
      });
 
-     localStorage.setItem('accessToken', data.accessToken);
 
-    setUser({ username: form.username,id:data.userId }); 
+
+    setUser({ username: form.username }); 
 
    toast.success("Login successful!");
     navigate("/")

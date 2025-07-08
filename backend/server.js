@@ -7,6 +7,8 @@ import bookRoutes from './routes/bookRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import annotationRoutes from './routes/annotationRoutes.js'
 import drawingRoutes from './routes/drawingRoutes.js'
+import cookieParser from 'cookie-parser';
+
 dotenv.config();
 
 const app = express();
@@ -14,6 +16,9 @@ const app = express();
 // Middleware
 app.use(cors({origin:'http://localhost:3000',credentials:true}));
 app.use(express.json());
+
+app.use(cookieParser()); // ✅ THIS IS CRITICAL
+
 app.use(express.json({ limit: "50mb" })); // To parse JSON data in the req.body
 app.use(express.urlencoded({ extended: true })); // To parse form data in the req.body
 app.use('/api/users',userRoutes)
