@@ -12,8 +12,17 @@ export default function PDFSinglePage({
  const isDrawing     = useRef(false);
  const currentStroke = useRef(null);
 
- const toPdf    = (x, y)      => [ x / (pageBox?.width || 1), y / (pageBox?.height || 1) ];
- const toCanvas = ([px, py])  => [ px * (pageBox?.width || 1), py * (pageBox?.height || 1) ];
+const toPdf = (x, y) => {
+  return {
+    x: x / (pageBox?.width || 1),
+    y: y / (pageBox?.height || 1)
+  };
+};
+
+ const toCanvas = ({ x, y }) => [
+  x * (pageBox?.width || 1),
+  y * (pageBox?.height || 1)
+];
 
  const redraw = useCallback(() => {
    const cvs = canvasRef.current;
@@ -52,26 +61,33 @@ export default function PDFSinglePage({
    };
  };
 
- const move = e => {
-   if (!isDrawing.current) return;
-   const rect = e.currentTarget.getBoundingClientRect();
-   currentStroke.current.points.push(
-     toPdf(e.clientX - rect.left, e.clientY - rect.top)
-   );
+const move = (e) => {
+  if (!isDrawing.current) return;
 
-   const ctx = canvasRef.current.getContext('2d');
-   const pts = currentStroke.current.points;
-   const n   = pts.length;
-   if (n < 2) return;
-   ctx.beginPath();
-   ctx.lineWidth   = 2 * window.devicePixelRatio;
-   ctx.strokeStyle = penColor;
-   const [x0, y0] = toCanvas(pts[n - 2]);
-   const [x1, y1] = toCanvas(pts[n - 1]);
-   ctx.moveTo(x0, y0);
-   ctx.lineTo(x1, y1);
-   ctx.stroke();
- };
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  // Push point as object
+  currentStroke.current.points.push(toPdf(x, y));
+
+  const ctx = canvasRef.current.getContext('2d');
+  const pts = currentStroke.current.points;
+  const n = pts.length;
+  if (n < 2) return;
+
+  ctx.beginPath();
+  ctx.lineWidth = 2 * window.devicePixelRatio;
+  ctx.strokeStyle = penColor;
+
+  const [x0, y0] = toCanvas(pts[n - 2]);
+  const [x1, y1] = toCanvas(pts[n - 1]);
+
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x1, y1);
+  ctx.stroke();
+};
+
 
 const up = () => {
   if (!isDrawing.current) return;
@@ -83,15 +99,18 @@ const up = () => {
   if (!strokesRef.current[pageNumber]) strokesRef.current[pageNumber] = [];
   strokesRef.current[pageNumber].push(stroke);
 
+  // Force canvas update immediately
+  redraw();
+
   // Add to backend
   onAddStroke({
     bookId,
     page: pageNumber,
     color: stroke.color,
     points: stroke.points,
-  
   });
 };
+
 
  // PDFSinglePage.jsx
 // ➜ ADD – helpers and eraser logic (place near other refs/handlers)
