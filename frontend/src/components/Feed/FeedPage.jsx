@@ -1,9 +1,13 @@
 import DefaultLayout from "../DefaultLayout/DefaultLayout";
-import { FaHeart, FaRegComment, FaShare } from "react-icons/fa";
+import { FaHeart, FaRegComment  , FaShare } from "react-icons/fa";
+import { LuSend } from "react-icons/lu";
+
 import { useState } from "react";
 import "./styles/feedpage.css";
 
-
+import avatar1 from '../../images/avatar1.png'
+import avatar2 from '../../images/avatar2.png'
+import avatar3 from '../../images/avatar3.png'
 function FeedPage() {
   const [input, setInput] = useState("");
 
@@ -12,7 +16,7 @@ function FeedPage() {
     id: 1,
     author: "Diana",
     time: "2d",
-    avatar: "https://loremflickr.com/40/40/girl?lock=12",
+    avatar:avatar2,
     text: `“Reading isn't just escape. It’s access to a better self.”\n\nFinished *Atomic Habits* yesterday. I never imagined habit theory could be this practical. Anyone else found it life-changing?`,
     likes: 148,
   },
@@ -20,7 +24,7 @@ function FeedPage() {
     id: 2,
     author: "Lark",
     time: "1d",
-    avatar: "https://loremflickr.com/40/40/boy?lock=24",
+    avatar: avatar3,
     text: `Just started *The Midnight Library* by Matt Haig. The concept of parallel lives hit me harder than expected.\n\nHas anyone here read it? Would love to hear your interpretation of the ‘regret’ theme.`,
     likes: 92,
   },
@@ -28,7 +32,7 @@ function FeedPage() {
     id: 3,
     author: "Mina",
     time: "12h",
-    avatar: "https://loremflickr.com/40/40/woman?lock=31",
+    avatar: avatar1,
     text: `“A reader lives a thousand lives before he dies.” – George R.R. Martin\n\nDo you think re-reading a book counts as a different life? I’ve read *Pride and Prejudice* 4 times and still find new things each read.`,
     likes: 210,
   },
@@ -36,7 +40,7 @@ function FeedPage() {
     id: 4,
     author: "Eli",
     time: "5m",
-    avatar: "https://loremflickr.com/40/40/man?lock=41",
+    avatar: avatar2,
     text: `What’s a book that made you stop and just... think?\n\nFor me, it was *Man's Search for Meaning*. Nothing else made me reflect so deeply on suffering, purpose, and survival.`,
     likes: 37,
   }
@@ -55,11 +59,6 @@ function FeedPage() {
       <div className="feed-container">
         {/* Post Input Bar */}
         <div className="post-input-bar">
-          <img
-            className="avatar"
-            src="https://loremflickr.com/40/40/avatar?lock=999"
-            alt="avatar"
-          />
           <input
             type="text"
             placeholder="What's on your mind..."
@@ -79,7 +78,7 @@ function FeedPage() {
                 <span className="author">{post.author}</span>
                 <span className="time">{post.time}</span>
               </div>
-              <div className="options">•••</div>
+            
             </div>
 
             <div className="post-text">
@@ -90,11 +89,11 @@ function FeedPage() {
 
            <div className="post-actions">
   <div className="icons">
-    <FaHeart className="icon" />
-    <FaRegComment className="icon" />
-    <FaShare className="icon" />
+    <FaHeart className="heart" size={18}   color= "#ff1f1fda "/>
+    <FaRegComment   />
+    <LuSend  size={17}  className="share"/>
   </div>
-  <div className="likes">{post.likes} likes</div>
+  <p className="likes">{post.likes} likes</p>
 </div>
 
           </div>
