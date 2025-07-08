@@ -54,7 +54,7 @@ export default function useStreakTracker() {
     const start = Date.now();
     const interval = setInterval(async () => {
       const minutes = (Date.now() - start) / 60000;
-      if (minutes >= 0.1 && user?.userId) {
+      if (minutes >= 10 && user?.userId) {
         const todayStr = getTodayDateStr();
         if (!completedDates.includes(todayStr)) {
           const updated = [...completedDates, todayStr];
