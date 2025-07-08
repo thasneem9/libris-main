@@ -134,7 +134,7 @@ if (idx > -1) {
   strokesRef.current[pageNumber].splice(idx, 1);
   redraw();
 
-  if (stroke._id) onDeleteStroke(stroke._id);  // Call backend delete
+  if (stroke.id) onDeleteStroke(stroke.id);  // Call backend delete
   return;
 }
 
@@ -150,7 +150,7 @@ if (idx > -1) {
       cx >= left && cx <= left + width &&
       cy >= top  && cy <= top + height
     ) {
-      onDelete(a._id); // backend delete
+      onDelete(a.id); // backend delete
       return;
     }
   }

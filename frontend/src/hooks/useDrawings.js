@@ -30,15 +30,15 @@ export default function useDrawings(bookId) {
     setData(prev => [...prev, optimistic]);
     try {
       const res = await axios.post('/api/drawings', stroke);
-      setData(prev => prev.map(s => s._id === tempId ? res.data : s));
+      setData(prev => prev.map(s => s.id === tempId ? res.data : s));
     } catch (err) {
-      setData(prev => prev.filter(s => s._id !== tempId));
+      setData(prev => prev.filter(s => s.id !== tempId));
       console.error('Drawing save failed:', err);
     }
   }, []);
 
   const remove = useCallback(async (id) => {
-    setData(prev => prev.filter(s => s._id !== id));
+    setData(prev => prev.filter(s => s.id !== id));
     try {
       await axios.delete(`/api/drawings/${id}`);
     } catch (err) {

@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-
 import './book.css'
 import book1 from '../images/book1.png'
 import book2 from '../images/book2.png'
@@ -8,7 +7,8 @@ import defaultCover from '../images/defaultCover.png'
 import { S3UrlContext } from '../contexts/s3urlContext'
 
 import { useContext, useEffect,useState } from 'react'
-
+import db from '../firebase/firebase'
+import { onSnapshot } from 'firebase/firestore';
 const Book = () => {
   const navigate = useNavigate();
 
@@ -49,6 +49,10 @@ const Book = () => {
   getBooks();
  },[])
 
+ /* FIREBASE FETCH-- */
+ 
+ /* FIREBASE FETCH-- */
+
   const handleOpenBook = (bookUrl,bookId) => {
     setSelectedPdfUrl(bookUrl);
     console.log("book id paassed:--",bookId)
@@ -69,7 +73,7 @@ const Book = () => {
       {
         books.map((book,index)=>(
         <>
-        <div    key={index}  className='book'  style={{ backgroundImage: `url(${book?.coverImage || defaultCover})` }}  onClick={() => handleOpenBook(book?.fileName,book?._id)}>  {book?.title || ''}</div>
+        <div    key={index}  className='book'  style={{ backgroundImage: `url(${book?.coverImage || defaultCover})` }}  onClick={() => handleOpenBook(book?.fileName,book?.id)}>  {book?.title || ''}</div>
         </>
         ))
       } 

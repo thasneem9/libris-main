@@ -31,16 +31,16 @@ export default function useAnnotations(bookId) {
 
     try {
       const { data: saved } = await axios.post('/api/annotations', payload);
-      setList(prev => prev.map(a => a._id === optimistic._id ? saved : a));
+      setList(prev => prev.map(a => a.id === optimistic.id ? saved : a));
     } catch (err) {
       console.error('Save failed:', err);
-      setList(prev => prev.filter(a => a._id !== optimistic._id));
+      setList(prev => prev.filter(a => a.id !== optimistic.id));
     }
   }, []);
 
   // Update annotation
   const update = useCallback(async (id, changes) => {
-    setList(prev => prev.map(a => a._id === id ? { ...a, ...changes } : a));
+    setList(prev => prev.map(a => a.id === id ? { ...a, ...changes } : a));
     try {
       await axios.put(`/api/annotations/${id}`, changes);
     } catch (err) {
@@ -51,7 +51,7 @@ export default function useAnnotations(bookId) {
  
     const remove = useCallback(async (id) => {
 
-    setList(prev => prev.filter(a => a._id !== id));
+    setList(prev => prev.filter(a => a.id !== id));
 
     try {
       await axios.delete(`/api/annotations/${id}`);

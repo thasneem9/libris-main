@@ -65,7 +65,7 @@ export async function addBook({ file, metadata, coverImageFile }) {
       message: 'Book uploaded successfully!',
       s3Url,
       coverImageUrl,
-      bookId: metaData.book?._id || null,
+      bookId: metaData.book?.id || null,
     };
   } catch (err) {
     return {

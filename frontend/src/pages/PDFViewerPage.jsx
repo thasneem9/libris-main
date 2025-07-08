@@ -121,7 +121,7 @@ const editComment = () => {
   if (newComment !== null && newComment !== activeComment.comment) {
     const updated = { ...activeComment, comment: newComment };
     setActiveComment(updated);
-    updAnn(activeComment._id, { comment: newComment });
+    updAnn(activeComment.id, { comment: newComment });
   }
 };
 

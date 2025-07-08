@@ -20,7 +20,7 @@ return annotations.map((a) => {
 
   return (
     <div
-      key={a._id}
+      key={a.id}
       className="ann-wrapper"
       /* 1️⃣ raise z‑index above PDF text layer (which is 2) 
          2️⃣ tiny transparent bg to receive pointer events       */
@@ -33,8 +33,8 @@ return annotations.map((a) => {
       onMouseDown={(e) => {          // fire even before selection starts
         if (!eraserMode) return;
         e.stopPropagation();         // don’t bubble to page mouseUp
-        console.log('🧹 ERASE', a._id);
-        onDelete(a._id);             // optimistic + backend delete
+        console.log('🧹 ERASE', a.id);
+        onDelete(a.id);             // optimistic + backend delete
       }}
     >
       {/* coloured rectangle (no pointer events) */}

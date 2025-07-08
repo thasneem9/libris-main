@@ -212,6 +212,7 @@ console.log(metadataData)
     if (!window.confirm(`Are you sure you want to delete "${book.title}"?`)) return;
   
     try {
+      
       const res = await fetch('/api/books/delete', {
         method: 'POST',
         headers: {
@@ -220,7 +221,7 @@ console.log(metadataData)
         credentials: 'include',
         body: JSON.stringify({
           fileName: book.fileName, // S3 key
-          bookId: book._id,        // MongoDB id
+          bookId: book.id,        // MongoDB id
         }),
       });
   
@@ -231,10 +232,10 @@ console.log(metadataData)
         setBooksByCategory(prev => {
           const updated = { ...prev };
           const cat = book?.category;
-          updated[cat] = updated[cat]?.filter(b => b._id !== book._id);
+          updated[cat] = updated[cat]?.filter(b => b.id !== book.id);
           return updated;
         });
-        setAllBooks(prev => prev.filter(b => b._id !== book._id));
+        setAllBooks(prev => prev.filter(b => b.id !== book.id));
         setShowModal(false);
       } else {
         alert(data.error || "Delete failed");
@@ -407,7 +408,7 @@ return(
   show={previewOpen}
   onHide={() => setPreviewOpen(false)}
   book={selectedBook}
-  handleOpenBook={() => handleOpenBook(selectedBook.fileName, selectedBook._id)}
+  handleOpenBook={() => handleOpenBook(selectedBook.fileName, selectedBook.id)}
   handleDeleteBook={handleDeleteBook}
 />
 
