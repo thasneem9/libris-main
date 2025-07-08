@@ -10,7 +10,7 @@ import BookPreviewModal from './BookPreviewModal';
 import { PiBooksLight } from "react-icons/pi";
 import { BiCategoryAlt } from "react-icons/bi";
 import defaultCover from '../images/defaultCover.png'
-import {themes} from '../utils/theme'
+
 import CustomSidebar from './Sidebar'
 import {
   FaCog,
@@ -248,26 +248,9 @@ console.log(metadataData)
   
  /* ----------------------------------- */
 
-const applyTheme = (themeName) => {
-  const theme = themes[themeName];
-  if (!theme) return;
-
-  Object.keys(theme).forEach((key) => {
-    document.documentElement.style.setProperty(key, theme[key]);
-  });
-};
 
 
-const handleThemeChange = (themeName) => {
-  applyTheme(themeName);
-  localStorage.setItem('theme', themeName);
-};
 
-
-useEffect(() => {
-    const saved = localStorage.getItem('theme') || 'frosty';
-    applyTheme(saved);
-  }, []);
 return(
     <>
   <Topbar />
@@ -275,7 +258,7 @@ return(
   <div className="homepage-layout">
     {/* Sidebar */}
 
-<CustomSidebar setShowModal={setShowModal} applyTheme={applyTheme}></CustomSidebar>
+<CustomSidebar setShowModal={setShowModal} ></CustomSidebar>
 
 
     {/* Main + Right section grouped tightly */}

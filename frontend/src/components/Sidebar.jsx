@@ -17,7 +17,7 @@ import { userAtom } from '../atoms/userAtom';
 import api from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
 
-export default function CustomSidebar({ setShowModal, applyTheme }) {
+export default function CustomSidebar({ setShowModal }) {
   const navigate=useNavigate()
 
 const setUser = useSetRecoilState(userAtom);
