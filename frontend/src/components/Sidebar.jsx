@@ -54,7 +54,7 @@ const setUser = useSetRecoilState(userAtom);
   };
   return (
     <>
-    <Sidebar backgroundColor="#f5fafd" className="d-flex flex-column justify-content-between p-3" style={{ height: '100vh' }}>
+    <Sidebar backgroundColor="#fff" className="d-flex flex-column justify-content-between p-3" style={{ height: '100vh' }}>
       {/* Logo & Top Buttons */}
       <div>
         <div className='d-flex  justify-content-between'> 

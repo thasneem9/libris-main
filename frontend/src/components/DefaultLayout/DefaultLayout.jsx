@@ -123,22 +123,22 @@ console.log(metadataData)
   };
 
   return (
-  <><Topbar />
-
+  <>
+  <Topbar />
 <div className="feed-layout d-flex">
   {/* Left sidebar */}
   <Sidebar setShowModal={setShowModal} />
-
   {/* Main feed (optional center content) */}
   <div className="feed-main p-3 flex-grow-1">
    {children}
   </div>
   <div>
-
   </div>
-
  <RightSidebar></RightSidebar>
 </div>
+
+
+
   <AddBookModal
     show={showModal}
     onHide={() => setShowModal(false)}

@@ -10,7 +10,7 @@
 }
 
 body.light-mode {
-  --bg-main: #f5fafd;
+  --bg-main: #ffffff;
   --bg-sidebar: #ffffff;
   --bg-card: #f0f4ff;
   --bg-card-hover: #d6ecff;
