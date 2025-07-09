@@ -10,12 +10,18 @@ import {
   FaGamepad,
   FaBookmark,
   FaSignOutAlt,
+  FaBookOpen 
 } from 'react-icons/fa';
+import { LuLibraryBig } from "react-icons/lu";
+
+import { GoCommentDiscussion } from "react-icons/go";
 import { TbColorFilter } from 'react-icons/tb';
 import { useSetRecoilState } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import api from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import { FiBook } from "react-icons/fi";
+import { LuPanelLeft } from "react-icons/lu";
 
 export default function CustomSidebar({ setShowModal }) {
   const navigate=useNavigate()
@@ -51,7 +57,11 @@ const setUser = useSetRecoilState(userAtom);
     <Sidebar backgroundColor="#f5fafd" className="d-flex flex-column justify-content-between p-3" style={{ height: '100vh' }}>
       {/* Logo & Top Buttons */}
       <div>
+        <div className='d-flex  justify-content-between'> 
         <h4 className="logo mb-4">📚 Libris</h4>
+        <LuPanelLeft />
+        </div>
+
         <Menu>
           <MenuItem>
             <Button
@@ -72,10 +82,12 @@ const setUser = useSetRecoilState(userAtom);
         <Menu>
        
        
-          <MenuItem icon={<FaUser />}  onClick={() => setShowModal(true)}>Add Book</MenuItem>
+          <MenuItem icon={<FiBook  />}  onClick={() => setShowModal(true)}>Add Book</MenuItem>
           <MenuItem icon={<FaUser />} onClick={handleUserAccountClick}>User Account</MenuItem>
-          <MenuItem icon={<FaRss />} onClick={handleFeedClick}>Social Feed</MenuItem>
+          <MenuItem icon={<GoCommentDiscussion  size={16}  />} onClick={handleFeedClick}>Discussion</MenuItem>
+          <MenuItem icon={<FaBookOpen  />} onClick={handleFeedClick}>Reading Journal</MenuItem>
           <MenuItem icon={<FaQuoteRight />} onClick={handleQuotesClick} >Highlights/Quotes</MenuItem>
+          <MenuItem icon={<LuLibraryBig />} onClick={handleQuotesClick} >Free Ebooks Library</MenuItem>
 
         </Menu>
 

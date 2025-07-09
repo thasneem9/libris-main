@@ -2,6 +2,7 @@ import'./rightsidebar.css'
 import { useState,useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import StreakTracker from './StreakTracker';
+import WhatsHappening from './RightSideBar/WhatsHappening';
 function RightSidebar() {
     
   const [quote, setQuote] = useState(null);
@@ -18,6 +19,7 @@ function RightSidebar() {
         {quote || "Loading..."}
       </Card.Text>
     </Card>
+     <WhatsHappening/>
 
     <Card className="p-3 shadow-sm">
       <StreakTracker />

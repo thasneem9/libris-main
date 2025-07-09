@@ -14,6 +14,7 @@ import defaultCover from '../images/defaultCover.png'
 import CustomSidebar from './Sidebar'
 import { getDailyQuote } from '../utils/DailyQoute';
 import StreakTracker  from './StreakTracker';
+import WhatsHappening from './RightSideBar/WhatsHappening';
 
 const Homepage = () => {
     const navigate=useNavigate();
@@ -288,12 +289,13 @@ return(
       </Card.Text>
 {/*       <a href="#" className="small">More Insights →</a>
  */}    </Card>
-
-        <Card className="p-3 shadow-sm">
+ <WhatsHappening/>
+        <Card className="p-3 shadow-sm" mb-4>
        
              <StreakTracker />
 
         </Card>
+       
       </div>
     </div>
   </div>

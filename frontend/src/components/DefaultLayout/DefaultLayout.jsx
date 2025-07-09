@@ -31,18 +31,7 @@ export default function DefaultLayout({children}) {
   /* FEED  */
     setCoverImageFile(imageFile);
     };
-      useEffect(() => {
-        fetch("https://type.fit/api/quotes")
-          .then((res) => res.json())
-          .then((data) => {
-            const random = data[Math.floor(Math.random() * data.length)];
-            setQuote(`"${random.text}" — ${random.author || "Unknown"}`);
-          })
-          .catch((err) => {
-            console.error("Quote fetch failed:", err);
-            setQuote(fallbackQuote);
-          });
-      }, []);
+   
     
     useEffect(() => {
         fetch("https://api.quotable.io/random")
