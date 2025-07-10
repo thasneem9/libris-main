@@ -7,6 +7,7 @@ import bookRoutes from './routes/bookRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import annotationRoutes from './routes/annotationRoutes.js'
 import drawingRoutes from './routes/drawingRoutes.js'
+import feedRoutes from "./routes/feedRoutes.js"
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.use('/api/users',userRoutes)
 app.use('/api/books',bookRoutes)
 app.use('/api/annotations',annotationRoutes)
 app.use('/api/drawings',drawingRoutes)
+app.use('/api/posts',feedRoutes)
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
