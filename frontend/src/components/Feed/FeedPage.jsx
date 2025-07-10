@@ -12,11 +12,19 @@ import './styles/feedpage.css'
 import useFeedPosts from "../../hooks/useFeedPosts.js";
 import { toast } from 'react-toastify';
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 function FeedPage() {
 
   const [input, setInput] = useState("");
-  const { posts, loading } = useFeedPosts(); // optional: make it return setPosts too
+  const { posts, loading } = useFeedPosts(); 
+  const navigate=useNavigate()
+
+  const handlePostClick=()=>{
+    navigate("/comment")
+
+
+  }
 
   const handleCreatePost = async () => {
     if (!input.trim()) return;
@@ -62,7 +70,7 @@ function FeedPage() {
 
         {/* Feed Posts */}
         {posts.map((post) => (
-          <Card key={post.id} className="mb-4 shadow-sm rounded-4">
+          <Card key={post.id} className="mb-4 shadow-sm rounded-4" onClick={handlePostClick}>
             <Card.Body>
               <Stack direction="horizontal" gap={3} className="mb-2 align-items-start">
                 <img
@@ -85,7 +93,7 @@ function FeedPage() {
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="d-flex gap-3 align-items-center">
                   <FaHeart size={18} color="#ff1f1fda" style={{ cursor: "pointer" }} />
-                  <FaRegComment size={17} style={{ cursor: "pointer" }} />
+                  <FaRegComment size={17} style={{ cursor: "pointer" }} onClick={handlePostClick}/>
                   <LuSend size={17} style={{ cursor: "pointer" }} />
                 </div>
                 <span className="text-muted" style={{ fontSize: "14px" }}>

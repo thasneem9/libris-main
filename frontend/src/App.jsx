@@ -14,6 +14,7 @@ import UserAccount from './components/UserAccount/UserAccount.jsx';
 import Quotes from './components/Quotes/Quotes.jsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Viewpost from './components/Feed/ViewPost.jsx';
 // wrote to avoid the super-persistent error: container must be absolute forp df-highlighter
 const AppWrapper = ({ children }) => (
   <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
@@ -40,6 +41,7 @@ function App() {
             <Route path="/feed" element={<FeedPage />} />
             <Route path="/user" element={<UserAccount />} />
             <Route path="/quotes" element={<  Quotes />} />
+            <Route path="/comment" element={<  Viewpost />} />
           </Routes>
         </AppWrapper>
            <ToastContainer position="top-right" autoClose={3000} />
