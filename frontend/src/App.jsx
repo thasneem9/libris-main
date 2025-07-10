@@ -41,7 +41,7 @@ function App() {
             <Route path="/feed" element={<FeedPage />} />
             <Route path="/user" element={<UserAccount />} />
             <Route path="/quotes" element={<  Quotes />} />
-            <Route path="/comment" element={<  Viewpost />} />
+            <Route path="/comment/:postId" element={<  Viewpost />} />
           </Routes>
         </AppWrapper>
            <ToastContainer position="top-right" autoClose={3000} />

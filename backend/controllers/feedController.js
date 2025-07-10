@@ -1,7 +1,6 @@
 import { db } from '../firebase/firebaseAdmin.js';
 
-// Create a new post
-// Create a new post
+
 const createPost = async (req, res) => {
   try {
     const userId = req.userId;
@@ -52,6 +51,26 @@ const getAllPosts = async (req, res) => {
   } catch (error) {
     console.error('Error fetching posts:', error);
     res.status(500).json({ message: 'Failed to fetch posts' });
+  }
+};
+
+// Get a single post by ID
+const getSinglePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const postRef = db.collection('posts').doc(postId);
+    const postSnap = await postRef.get();
+
+    if (!postSnap.exists) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const postData = { id: postSnap.id, ...postSnap.data() };
+    res.status(200).json(postData);
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    res.status(500).json({ message: 'Failed to fetch post' });
   }
 };
 
@@ -112,37 +131,58 @@ const toggleLike = async (req, res) => {
   }
 };
 
-// Add comment to post
 const addComment = async (req, res) => {
   try {
-    const userId=req.userId
+    console.log("💬 [addComment] POST triggered");
+
+    const userId = req.userId;
     const { postId } = req.params;
-    const {  comment } = req.body;
+    const { comment, replyToUsername } = req.body;
+
+
+    console.log("🔐 userId:", userId);
+    console.log("🆔 postId:", postId);
+    console.log("📝 comment:", comment);
+    console.log("↩️ replyTo:", replyToUsername);
+
+    if (!userId || !postId || !comment) {
+      return res.status(400).json({ message: "Missing data in request" });
+    }
 
     const postRef = db.collection('posts').doc(postId);
     const postSnap = await postRef.get();
-
     if (!postSnap.exists) return res.status(404).json({ message: 'Post not found' });
 
-    const post = postSnap.data();
-    const comments = post.comments || [];
+    const userDoc = await db.collection('users').doc(userId).get();
+    if (!userDoc.exists) return res.status(404).json({ message: 'User not found' });
+
+    const { username } = userDoc.data();
+const avatar = userDoc.data().avatar || null; // fallback if missing
+
 
     const newComment = {
+      id: db.collection('posts').doc().id,
       userId,
+      username,
+      avatar,
       comment,
-      createdAt: new Date()
+      replyToUsername: replyToUsername || null,
+      createdAt: new Date(),
+      likes: []
     };
 
-    await postRef.update({
-      comments: [...comments, newComment]
-    });
+    const comments = postSnap.data().comments || [];
+    comments.push(newComment);
 
-    res.status(200).json({ message: 'Comment added successfully' });
+    await postRef.update({ comments });
+
+    return res.status(200).json({ message: 'Comment added successfully' });
   } catch (error) {
-    console.error('Error adding comment:', error);
-    res.status(500).json({ message: 'Failed to add comment' });
+    console.error("🔥 [addComment] Backend Error:", error);
+    return res.status(500).json({ message: 'Failed to add comment' });
   }
 };
+
 
 export {
   createPost,
@@ -150,5 +190,6 @@ export {
   updatePost,
   deletePost,
   toggleLike,
-  addComment
+  addComment,
+  getSinglePost
 };

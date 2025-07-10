@@ -17,14 +17,14 @@ import { useNavigate } from "react-router-dom";
 function FeedPage() {
 
   const [input, setInput] = useState("");
-  const { posts, loading } = useFeedPosts(); 
+const { posts, loading, refetch } = useFeedPosts();
+
   const navigate=useNavigate()
 
-  const handlePostClick=()=>{
-    navigate("/comment")
+const handlePostClick = (postId) => {
+  navigate(`/comment/${postId}`); // ✅ only the id
+};
 
-
-  }
 
   const handleCreatePost = async () => {
     if (!input.trim()) return;
@@ -35,7 +35,7 @@ function FeedPage() {
       });
       console.log("Post created:", res.data);
       setInput(""); // clear input
-      window.location.reload(); // 🔄 Quick way to reload posts (or call fetchPosts() if exposed)
+    await refetch(); // instead of reload
     } catch (err) {
       console.error("Error creating post:", err.response?.data || err.message);
       toast?.error("Failed to post"); // optional UX
@@ -70,7 +70,8 @@ function FeedPage() {
 
         {/* Feed Posts */}
         {posts.map((post) => (
-          <Card key={post.id} className="mb-4 shadow-sm rounded-4" onClick={handlePostClick}>
+          <Card key={post.id} className="mb-4 shadow-sm rounded-4" onClick={() => handlePostClick(post.id)} // ✅ perfect
+>
             <Card.Body>
               <Stack direction="horizontal" gap={3} className="mb-2 align-items-start">
                 <img
@@ -81,7 +82,8 @@ function FeedPage() {
                 <div className="flex-grow-1">
                   <div style={{ fontWeight: 600 }}>{post.username}</div>
                   <div className="text-muted" style={{ fontSize: "12px" }}>
-                    {post.time}
+                 {new Date(post.createdAt).toLocaleString()}
+
                   </div>
                 </div>
               </Stack>
@@ -93,7 +95,8 @@ function FeedPage() {
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="d-flex gap-3 align-items-center">
                   <FaHeart size={18} color="#ff1f1fda" style={{ cursor: "pointer" }} />
-                  <FaRegComment size={17} style={{ cursor: "pointer" }} onClick={handlePostClick}/>
+                  <FaRegComment size={17} style={{ cursor: "pointer" }}onClick={() => handlePostClick(post.id)} // ✅ perfect
+/>
                   <LuSend size={17} style={{ cursor: "pointer" }} />
                 </div>
                 <span className="text-muted" style={{ fontSize: "14px" }}>
