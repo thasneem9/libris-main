@@ -18,7 +18,9 @@ const useFeedPosts = () => {
 
   useEffect(() => { fetchPosts(); }, []);
 
-  return { posts, loading, refetch: fetchPosts };
+// ✅ inside useFeedPosts.js
+return { posts, loading, refetch: fetchPosts, setPosts };
+
 };
 
 

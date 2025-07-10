@@ -13,11 +13,19 @@ import useFeedPosts from "../../hooks/useFeedPosts.js";
 import { toast } from 'react-toastify';
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "../../atoms/userAtom"; // path may vary
+
+import { IoReturnDownForwardOutline } from "react-icons/io5";
 
 function FeedPage() {
+  const user = useRecoilValue(userAtom);
+  const userId = user.userId;
 
+console.log(userId)
   const [input, setInput] = useState("");
-const { posts, loading, refetch } = useFeedPosts();
+const { posts, loading, refetch, setPosts } = useFeedPosts();
+
 
   const navigate=useNavigate()
 
@@ -41,6 +49,38 @@ const handlePostClick = (postId) => {
       toast?.error("Failed to post"); // optional UX
     }
   };
+const handleToggleLike = async (postId) => {
+  if (!userId){
+    console.log("no userId ")
+    return
+  }
+
+  console.log("💥 Like toggled for post:", postId); // add this!
+
+  try {
+    await axios.post(`/api/posts/like/${postId}`, {}, { withCredentials: true });
+
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id === postId) {
+          const liked = post.likes.includes(userId);
+          const newLikes = liked
+            ? post.likes.filter((id) => id !== userId)
+            : [...post.likes, userId];
+
+          return { ...post, likes: newLikes };
+        }
+        return post;
+      })
+    );
+  } catch (err) {
+    console.error("Error liking post:", err.response?.data || err.message);
+    toast?.error("Failed to like post");
+  }
+};
+
+
+
   return (
     <DefaultLayout>
       <Container style={{ maxWidth: "540px", padding: "24px 0" }}>
@@ -70,7 +110,7 @@ const handlePostClick = (postId) => {
 
         {/* Feed Posts */}
         {posts.map((post) => (
-          <Card key={post.id} className="mb-4 shadow-sm rounded-4" onClick={() => handlePostClick(post.id)} // ✅ perfect
+          <Card key={post.id} className="mb-4 shadow-sm rounded-4" // ✅ perfect
 >
             <Card.Body>
               <Stack direction="horizontal" gap={3} className="mb-2 align-items-start">
@@ -94,14 +134,31 @@ const handlePostClick = (postId) => {
 
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="d-flex gap-3 align-items-center">
-                  <FaHeart size={18} color="#ff1f1fda" style={{ cursor: "pointer" }} />
+                    {(() => {
+  const liked = post.likes.includes(userId);
+  return (
+    <FaHeart
+      size={18}
+      color={liked ? "#ff1f1fda" : "#aaa"}
+      style={{ cursor: "pointer" }}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleToggleLike(post.id);
+      }}
+    />
+  );
+})()}
+
+
+
                   <FaRegComment size={17} style={{ cursor: "pointer" }}onClick={() => handlePostClick(post.id)} // ✅ perfect
 />
                   <LuSend size={17} style={{ cursor: "pointer" }} />
                 </div>
                 <span className="text-muted" style={{ fontSize: "14px" }}>
-                  {post.likes} likes
-                </span>
+  {post.likes?.length || 0} likes
+</span>
+
               </div>
             </Card.Body>
           </Card>

@@ -107,20 +107,22 @@ const deletePost = async (req, res) => {
 // Like or unlike a post
 const toggleLike = async (req, res) => {
   try {
-    const { postId } = req.params;
-    const { userId } = req.userId;
+    const postId = req.params.postId;
+    const userId = req.userId;
 
     const postRef = db.collection('posts').doc(postId);
     const postSnap = await postRef.get();
 
-    if (!postSnap.exists) return res.status(404).json({ message: 'Post not found' });
+    if (!postSnap.exists) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
 
     const post = postSnap.data();
     const likes = post.likes || [];
 
     const updatedLikes = likes.includes(userId)
-      ? likes.filter(id => id !== userId)  // Unlike
-      : [...likes, userId];                // Like
+      ? likes.filter((id) => id !== userId)
+      : [...likes, userId];
 
     await postRef.update({ likes: updatedLikes });
 
@@ -131,6 +133,7 @@ const toggleLike = async (req, res) => {
   }
 };
 
+
 const addComment = async (req, res) => {
   try {
     console.log("💬 [addComment] POST triggered");
@@ -140,10 +143,10 @@ const addComment = async (req, res) => {
     const { comment, replyToUsername } = req.body;
 
 
-    console.log("🔐 userId:", userId);
+  /*   console.log("🔐 userId:", userId);
     console.log("🆔 postId:", postId);
     console.log("📝 comment:", comment);
-    console.log("↩️ replyTo:", replyToUsername);
+    console.log("↩️ replyTo:", replyToUsername); */
 
     if (!userId || !postId || !comment) {
       return res.status(400).json({ message: "Missing data in request" });
