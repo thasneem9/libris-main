@@ -9,6 +9,10 @@ import { FaHeart, FaRegComment } from "react-icons/fa";
 import { LuReply } from "react-icons/lu";
 import avatar1 from "../../images/avatar1.png";
 import useSinglePost from "../../hooks/useSinglePost.JS";
+import { toast } from "react-toastify";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "../../atoms/userAtom";
+
 
 export default function ViewPost() {
   const { postId } = useParams();
@@ -17,6 +21,9 @@ export default function ViewPost() {
   const [commentInput, setCommentInput] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const inputRef = useRef(null);
+  const user = useRecoilValue(userAtom);
+const userId = user.userId;
+
 
   const handleReplyClick = (username) => {
     const mention = `@${username} `;
@@ -42,6 +49,31 @@ export default function ViewPost() {
       console.error("🔥 Failed to post comment:", err.response?.data || err.message);
     }
   };
+  const handleToggleLike = async () => {
+  if (!userId) {
+    console.log("no userId");
+    return;
+  }
+
+  console.log("💥 Like toggled for post:", postId);
+
+  try {
+    await axios.post(`/api/posts/like/${postId}`, {}, { withCredentials: true });
+
+    // Toggle like state locally
+    const liked = post.likes.includes(userId);
+    const newLikes = liked
+      ? post.likes.filter((id) => id !== userId)
+      : [...post.likes, userId];
+
+    post.likes = newLikes;
+    refetch(); // optional: refresh from backend
+  } catch (err) {
+    console.error("Error liking post:", err.response?.data || err.message);
+    toast?.error("Failed to like post");
+  }
+};
+
 
   const highlightMentions = (text) => {
     const parts = text.split(/(@\w+)/g);
@@ -73,8 +105,27 @@ export default function ViewPost() {
               {post.content}
             </Card.Text>
             <div className="d-flex gap-3 align-items-center">
-              <FaHeart size={18} color="#ff1f1fda" />
+             {(() => {
+  const liked = post.likes.includes(userId);
+  return (
+    <FaHeart
+      size={18}
+      color={liked ? "#ff1f1fda" : "#aaa"}
+      style={{ cursor: "pointer" }}
+      onClick={handleToggleLike}
+    />
+  );
+})()
+
+}
+
+
+
               <FaRegComment size={17} />
+               <LuSend size={17} style={{ cursor: "pointer" }} />
+                 <span className="text-muted" style={{ fontSize: "14px" }}>
+  {post.likes?.length || 0} likes
+</span>
             </div>
           </Card.Body>
         </Card>
