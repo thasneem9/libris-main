@@ -12,6 +12,7 @@ import useSinglePost from "../../hooks/useSinglePost.JS";
 import { toast } from "react-toastify";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../atoms/userAtom";
+import { LuSend } from "react-icons/lu";
 
 
 export default function ViewPost() {
