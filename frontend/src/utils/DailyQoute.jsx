@@ -23,6 +23,6 @@ export async function getDailyQuote() {
     localStorage.setItem(TIME_KEY, new Date().toISOString());
     return newQuote;
   } catch (err) {
-    return "“Inspiration failed to load.”";
+    return "“If you don't stand for something, you will fall for anything”";
   }
 }

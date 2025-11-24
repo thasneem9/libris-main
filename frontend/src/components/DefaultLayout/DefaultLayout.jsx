@@ -41,7 +41,7 @@ export default function DefaultLayout({children}) {
           })
           .catch((err) => {
          /*    console.error("Failed to fetch quote:", err); */
-            setQuote("“Inspiration failed to load.”");
+            setQuote("Science is not about removing mysteries but turning unkown mysteries into better mysteries");
           });
       }, []);
 
